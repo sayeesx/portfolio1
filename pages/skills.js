@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import Head from 'next/head'
 import Layout from '../components/Layout'
-import ChatWidget from '../components/ChatWidget'
+import ChatWidget from '../components/chatWidget'
 
 const webDevSkills = [
   { name: 'JavaScript', logo: '/img/javascript.svg', projects: ['Interactive Web App',] },
