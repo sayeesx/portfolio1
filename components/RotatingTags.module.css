@@ -1,0 +1,36 @@
+/* components/RotatingTags.module.css */
+.tag {
+    display: inline-block; /* Allow transformation and positioning */
+    color: #00ffff; /* Tag color */
+    font-weight: bold; /* Make tags bold */
+    font-size: 1.5rem; /* Adjust font size */
+    perspective: 1000px; /* Perspective for 3D effect */
+    transition: opacity 0.5s ease; /* Smooth transition for fading */
+}
+
+.flipping {
+    animation: flip 1s ease forwards; /* Apply the flip animation with longer duration */
+}
+
+@keyframes flip {
+    0% {
+        transform: rotateX(0); /* Start at original position */
+        opacity: 1; /* Fully visible */
+    }
+    25% {
+        transform: rotateX(90deg); /* Rotate to the halfway point */
+        opacity: 0; /* Fade out */
+    }
+    50% {
+        transform: rotateX(90deg); /* Stay at halfway point */
+        opacity: 0; /* Fully faded out */
+    }
+    75% {
+        transform: rotateX(-90deg); /* Rotate back to halfway point */
+        opacity: 0; /* Remain fully faded out */
+    }
+    100% {
+        transform: rotateX(0); /* Return to original position */
+        opacity: 1; /* Fully visible */
+    }
+}

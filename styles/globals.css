@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background-color: #000000;
+  color: #ecf0f1;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  box-shadow: -4px 0 6px -1px rgba(128, 128, 128, 0.1);
+}
+
+/* Additional styles for better contrast and readability */
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-gray-100;
+  }
+
+  a {
+    @apply text-blue-400 hover:text-blue-300 transition-colors;
+  }
+
+  p {
+    @apply text-gray-300;
+  }
+}
+@keyframes reflection {
+  0% {
+    transform: translateX(-100%) skew(-45deg);
+  }
+  100% {
+    transform: translateX(200%) skew(-45deg);
+  }
+}
+
+.animate-reflection {
+  animation: reflection 1s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* Ensure all content is visible without scrolling */
+#__next, .layout-wrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+/* Hide scrollbars */
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}

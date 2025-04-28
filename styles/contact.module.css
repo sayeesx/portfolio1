@@ -1,0 +1,105 @@
+/* styles/contact.module.css */
+.formContainer {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  top: 100px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  box-shadow: 8px 8px 16px #000000, -8px -8px 16px #000000; /* Neomorphic outer shadow */
+  position: relative;
+  overflow: hidden;
+}
+
+.formField {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 25px;
+}
+
+.formLabel {
+  margin-bottom: 5px;
+  font-weight: bold;
+  border-radius:5px;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  background-color: #0000006f; /* Transparent background */
+  padding: 0 10px;
+  font-size: 0.9rem;
+  color: #ffffff;
+  transition: all 0.3s ease; /* Smooth animation */
+}
+
+.formInput {
+  padding: 15px;
+  border-radius: 15px;
+  border: none;
+  background: #e0e0e0;
+  box-shadow: inset 4px 4px 8px #bebebe, inset -4px -4px 8px #ffffff; /* Neomorphic inner shadow */
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.formInput:focus {
+  box-shadow: inset 2px 2px 5px #b8b8b8, inset -2px -2px 5px #ffffff; /* Neomorphic focused state */
+}
+
+.formInput:focus + .formLabel,
+.formInput:not(:placeholder-shown) + .formLabel {
+  top: -20px;
+  left: 10px;
+  font-size: 0.8rem;
+  color: #00cccc; /* Label animation on focus */
+}
+
+.submitButton {
+  padding: 12px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 6px 6px 12px #b6b6b6, -6px -6px 12px #ffffff; /* Neomorphic button shadow */
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  box-shadow: 4px 4px 10px #b0b0b0, -4px -4px 10px #ffffff;
+  background-color: #218838;
+}
+
+.successMessage {
+  display: none; /* Initially hidden */
+  text-align: center;
+  padding: 20px;
+  color: #28a745;
+  font-size: 1.2rem;
+}
+
+.successMessage.active {
+  display: block; /* Show success message */
+}
+
+.successIcon {
+  font-size: 2rem;
+  color: #28a745;
+  margin-right: 10px;
+}
+
+.mainContent {
+  margin-top: 60px;
+  padding: 20px;
+  color: #fff;
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+}
+
+.neomorphicEffect {
+  background: #e0e0e0;
+  box-shadow: 6px 6px 12px #b8b9be, -6px -6px 12px #ffffff; /* Neomorphic shadow effect */
+  border-radius: 15px;
+}
