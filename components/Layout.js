@@ -1,7 +1,15 @@
 // components/Layout.js
 import Link from 'next/link';
-import { useRouter } from 'next/router'; // Import useRouter
+import { useRouter } from 'next/router';
 import styles from './Layout.module.css';
+
+export const metadata = {
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+};
 
 const Layout = ({ children }) => {
   const router = useRouter(); // Get the router object
