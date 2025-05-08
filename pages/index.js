@@ -17,17 +17,14 @@ export default function Component() {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Check if this is the first visit
     const hasVisitedBefore = localStorage.getItem('hasVisitedHomepage')
     const isNewPageLoad = performance.navigation.type === performance.navigation.TYPE_NAVIGATE
-    
-    // Only show loading if this is the homepage AND first visit AND new page load
     const shouldShowLoading = pathname === '/' && !hasVisitedBefore && isNewPageLoad
 
     if (shouldShowLoading) {
       setIsLoading(true)
       localStorage.setItem('hasVisitedHomepage', 'true')
-      
+
       const loadingTimer = setTimeout(() => {
         setIsLoading(false)
       }, 2800)
@@ -42,7 +39,7 @@ export default function Component() {
       }
     } else {
       setIsLoading(false)
-      setZoomOut(true) // Immediately show content without animation
+      setZoomOut(true)
     }
   }, [pathname])
 
@@ -51,12 +48,9 @@ export default function Component() {
       setIsMobile(window.innerWidth <= 768)
     }
 
-    handleResize() // Initial check
+    handleResize()
     window.addEventListener('resize', handleResize)
-
-    return () => {
-      window.removeEventListener('resize', handleResize)
-    }
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   if (isLoading) {
@@ -77,30 +71,37 @@ export default function Component() {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+
+      {/* Fixed Background - lower z-index */}
+      <div className="fixed inset-0 z-0">
+        <img
+          src="/images/hero-bg.jpg"
+          alt="Background"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-60" />
+      </div>
+
+      {/* Fixed Content - middle z-index */}
       <div
-        className={`flex flex-col items-center justify-center min-h-screen text-center px-4 transform transition-all duration-1000 ease-out mx-auto
+        className={`fixed inset-0 z-10 flex flex-col items-center justify-center text-center px-4 transform transition-all duration-1000 ease-out mx-auto
           ${zoomOut ? 'scale-90 opacity-100' : 'scale-110 opacity-0'}`}
       >
         <div className="flex flex-col items-center gap-4 mb-4">
-          <h1 className="text-3xl md:text-6xl font-bold">Hello, I&apos;m Muhammed Sayees</h1>
-          <p className="text-lg md:text-2xl bg-[#3d5be0] text-white p-2 rounded-md whitespace-nowrap">
+          <h1 className="text-3xl md:text-6xl font-bold text-white">Hello, I&apos;m Muhammed Sayees</h1>
+          <p className="text-lg md:text-2xl bg-[#3d5be0] text-white px-4 py-1 rounded-md whitespace-nowrap shadow-lg">
             I am a Developer and Entrepreneur
           </p>
         </div>
 
         <div>
-          <p className="max-w-2xl mx-auto mb-4 text-muted-foreground">
+          <p className="max-w-2xl mx-auto mb-4 text-white">
             <TypeWriter text="Turning caffeine into code and ideas into ventures—one keystroke at a time." delay={30} />
           </p>
         </div>
 
-        <div className="flex flex-col items-center w-full max-w-4xl px-4 mt-8 gap-6">
-          <div className={`transition-all duration-300 ease-in-out flex items-center ${
-            isMobile ? 'w-20 h-20' : 'w-24 h-24'
-          }`}>
-            <ChatWidget />
-          </div>
-
+        {/* About Me button */}
+        <div className="flex flex-col items-center w-full max-w-4xl px-4 mt-2 gap-6">
           <Link
             href="/aboutme"
             className="bg-[#3d5be0] text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out flex items-center group hover:scale-105"
@@ -109,6 +110,11 @@ export default function Component() {
             <ArrowRight className="ml-2 text-white transition-all duration-300 ease-in-out transform group-hover:translate-x-1" />
           </Link>
         </div>
+      </div>
+
+      {/* Chat Widget - highest z-index */}
+      <div className="z-[99999] relative">
+        <ChatWidget />
       </div>
     </Layout>
   )
