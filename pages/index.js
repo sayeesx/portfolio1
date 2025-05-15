@@ -116,7 +116,7 @@ export default function Component() {
             onClick={() => {
               window.open('/MUHAMMED_SAYEES_CV.pdf', '_blank');
             }}
-            className="w-[140px] border-2 border-white text-white px-4 py-2 rounded-full font-semibold transition-all duration-300 ease-in-out flex items-center justify-center group hover:scale-105 hover:border-[#3d5be0] relative"
+            className="w-[140px] border-2 border-white text-white px-4 py-1.5 rounded-full font-semibold transition-all duration-300 ease-in-out flex items-center justify-center group hover:scale-105 hover:border-[#3d5be0] relative"
           >
             <span className="text-white text-sm flex items-center whitespace-nowrap">
               Download CV
