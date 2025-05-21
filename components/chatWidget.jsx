@@ -109,7 +109,7 @@ export default function ChatWidget() {
 
       await handleTypingAnimation();
 
-      const res = await fetchWithTimeout("https://chatbot-3-ayjr.onrender.com/chatbot", {
+      const res = await fetchWithTimeout("https://chatbot-2-xx4t.onrender.com/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
