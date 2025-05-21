@@ -1,6 +1,24 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
 
+// Add this helper function at the top of your component
+const fetchWithTimeout = async (url, options, timeout = 10000) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
+  } catch (err) {
+    clearTimeout(id);
+    throw err;
+  }
+};
+
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -12,6 +30,7 @@ export default function ChatWidget() {
   const [showBotIcon, setShowBotIcon] = useState(true);
   const [isCompact, setIsCompact] = useState(false);
   const [zoomOut, setZoomOut] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
@@ -80,33 +99,48 @@ export default function ChatWidget() {
   };
 
   const handleSendMessage = async (message) => {
-    if (!message.trim()) return;
-
-    setMessages(prev => [...prev, { text: message, sender: 'user' }]);
-    setInputMessage('');
-    setShowBotIcon(false); // Switch to chat icon
-
-    await handleTypingAnimation();
+    if (!message.trim() || isSubmitting) return;
 
     try {
-      const res = await fetch("https://chatbot-3-ayjr.onrender.com/", {
+      setIsSubmitting(true);
+      setMessages(prev => [...prev, { text: message, sender: 'user' }]);
+      setInputMessage('');
+      setShowBotIcon(false);
+
+      await handleTypingAnimation();
+
+      const res = await fetchWithTimeout("https://chatbot-3-ayjr.onrender.com/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
-      });
+      }, 10000);
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
 
       const data = await res.json();
+      
+      if (!data.reply) {
+        throw new Error('Invalid response format');
+      }
+
       setMessages(prev => [...prev, {
         text: data.reply,
         sender: 'bot'
       }]);
-      setShowBotIcon(true); // Switch back to bot icon
+      setShowBotIcon(true);
     } catch (err) {
+      console.error('Chat error:', err);
       setMessages(prev => [...prev, {
-        text: "Sorry, I couldn't connect to the chatbot server.",
+        text: err.message === 'Invalid response format' 
+          ? "Received an invalid response from the server."
+          : "Sorry, I couldn't connect to the chatbot server. Please try again later.",
         sender: 'bot'
       }]);
-      setShowBotIcon(true); // Switch back to bot icon even on error
+      setShowBotIcon(true);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -237,11 +271,18 @@ export default function ChatWidget() {
               />
               <button
                 type="submit"
-                disabled={!inputMessage.trim()}
-                className="p-2 bg-blue-900 text-white rounded-lg hover:bg-blue-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={!inputMessage.trim() || isSubmitting}
+                className="p-2 bg-blue-900 text-white rounded-lg hover:bg-blue-900 
+                  transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <Send className="w-4 h-4" />
-                <span className="sr-only">Send message</span>
+                {isSubmitting ? (
+                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                ) : (
+                  <Send className="w-4 h-4" />
+                )}
+                <span className="sr-only">
+                  {isSubmitting ? "Sending..." : "Send message"}
+                </span>
               </button>
             </form>
           </div>
