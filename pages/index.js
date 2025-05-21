@@ -130,7 +130,7 @@ export default function Component() {
       </div>
 
       {/* Chat Widget - highest z-index */}
-      <div className="z-[99999] relative">
+      <div className="fixed bottom-8 right-8 z-[99999]">
         <ChatWidget />
       </div>
 
