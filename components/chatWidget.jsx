@@ -33,6 +33,15 @@ export default function ChatWidget() {
   const [zoomOut, setZoomOut] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTypingMessage, setIsTypingMessage] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(true);
+
+  const quickActions = [
+    { text: "👋 Who is Sayees?", query: "who is sayees" },
+    { text: "🎓 Education", query: "education" },
+    { text: "💼 Projects", query: "projects" },
+    { text: "🛠 Skills", query: "skills" },
+    { text: "📍 Location", query: "where are you from" },
+  ];
 
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
@@ -70,10 +79,10 @@ export default function ChatWidget() {
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > 0 || isTyping || isTypingMessage) {
       scrollToBottom();
     }
-  }, [messages]);
+  }, [messages, isTyping, isTypingMessage]); // Add isTyping and isTypingMessage as dependencies
 
   useEffect(() => {
     const handleResize = () => {
@@ -94,9 +103,18 @@ export default function ChatWidget() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (isOpen) {
+      setMessages([{
+        text: "👋 Hi! I'm Sayees's AI assistant. How can I help you today?",
+        sender: 'bot'
+      }]);
+    }
+  }, [isOpen]);
+
   const handleTypingAnimation = async () => {
     setIsTyping(true);
-    await new Promise(resolve => setTimeout(resolve, 1500)); // 1.5s typing delay
+    // Remove the artificial delay
     setIsTyping(false);
   };
 
@@ -104,12 +122,12 @@ export default function ChatWidget() {
     if (!message.trim() || isSubmitting) return;
 
     try {
+      setShowQuickActions(false);
       setIsSubmitting(true);
       setMessages(prev => [...prev, { text: message, sender: 'user' }]);
       setInputMessage('');
       setShowBotIcon(false);
-
-      await handleTypingAnimation();
+      setIsTypingMessage(true); // Start typing animation immediately
 
       const res = await fetchWithTimeout("https://chatbot-2-xx4t.onrender.com//chatbot", {
         method: "POST",
@@ -127,7 +145,7 @@ export default function ChatWidget() {
         throw new Error('Invalid response format');
       }
 
-      setIsTypingMessage(true);
+      // Add response immediately after typing animation
       setMessages(prev => [...prev, {
         text: data.response,
         sender: 'bot'
@@ -144,6 +162,7 @@ export default function ChatWidget() {
     } finally {
       setIsSubmitting(false);
       setShowBotIcon(true);
+      setIsTypingMessage(false);
     }
   };
 
@@ -249,6 +268,7 @@ export default function ChatWidget() {
                     <TypeWriter 
                       text={message.text} 
                       onComplete={() => setIsTypingMessage(false)}
+                      onCharacterTyped={scrollToBottom} // Add this prop
                     />
                   ) : (
                     message.text
@@ -256,6 +276,24 @@ export default function ChatWidget() {
                 </div>
               </div>
             ))}
+            
+            {/* Quick Action Buttons */}
+            {showQuickActions && messages.length === 1 && (
+              <div className="flex flex-wrap gap-2 mt-4">
+                {quickActions.map((action, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSendMessage(action.query)}
+                    className="px-3 py-1.5 text-sm bg-blue-50 text-blue-900 rounded-full 
+                      hover:bg-blue-100 transition-colors duration-200 
+                      border border-blue-200 flex items-center gap-1"
+                  >
+                    {action.text}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {isTyping && (
               <div className="flex justify-start">
                 <div className="bg-gray-100 rounded-lg p-2 text-gray-700 rounded-bl-none">
@@ -303,42 +341,73 @@ export default function ChatWidget() {
         .typing-animation {
           display: flex;
           align-items: center;
-          gap: 6px;
+          gap: 4px;
           padding: 4px 8px;
+          opacity: 1;
+          animation: fadeInOut 0.3s ease-in-out;
         }
         
-        .typing-animation span {
-          width: 6px;
-          height: 6px;
-          background: #4B5563;
-          border-radius: 50%;
-          animation: smoothTyping 1.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
-          opacity: 0.8;
+        @keyframes fadeInOut {
+          0% {
+            opacity: 0;
+            transform: translateY(5px);
+          }
+          20% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          90% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-5px);
+          }
         }
-        
-        .typing-animation span:nth-child(1) {
-          animation-delay: 0s;
+
+        .message-transition {
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          animation: slideIn 0.3s ease-out;
         }
-        
-        .typing-animation span:nth-child(2) {
-          animation-delay: 0.3s;
+
+        @keyframes slideIn {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
-        
-        .typing-animation span:nth-child(3) {
-          animation-delay: 0.6s;
-        }
-        
+
         @keyframes smoothTyping {
           0%, 100% {
-            transform: translateY(0px);
+            transform: translateY(0);
             opacity: 0.4;
           }
           50% {
-            transform: translateY(-8px);
+            transform: translateY(-6px);
             opacity: 1;
           }
         }
 
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(5px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .typing-animation span:nth-child(1) { animation-delay: 0s; }
+        .typing-animation span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-animation span:nth-child(3) { animation-delay: 0.4s; }
+        
         @keyframes iconRotate {
           from {
             transform: rotate(0deg) scale(1);
@@ -472,6 +541,49 @@ export default function ChatWidget() {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+
+        /* Quick Action Buttons Animation */
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        button {
+          animation: fadeInUp 0.3s ease-out;
+          animation-fill-mode: both;
+        }
+
+        button:nth-child(1) { animation-delay: 0.1s; }
+        button:nth-child(2) { animation-delay: 0.2s; }
+        button:nth-child(3) { animation-delay: 0.3s; }
+        button:nth-child(4) { animation-delay: 0.4s; }
+        button:nth-child(5) { animation-delay: 0.5s; }
+
+        .cursor {
+          display: inline-block;
+          width: 2px;
+          height: 1em;
+          background: currentColor;
+          margin-left: 2px;
+          animation: blink 0.7s step-end infinite;
+          opacity: 0.7;
+        }
+
+        @keyframes blink {
+          from, to { opacity: 0; }
+          50% { opacity: 1; }
+        }
+
+        /* Smooth transition for message appearance */
+        .message-transition {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
     </>
