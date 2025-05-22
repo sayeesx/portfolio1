@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Bot } from 'lucide-react';
+import TypeWriter from './TypeWriter';
 
 // Add this helper function at the top of your component
 const fetchWithTimeout = async (url, options, timeout = 10000) => {
@@ -31,6 +32,7 @@ export default function ChatWidget() {
   const [isCompact, setIsCompact] = useState(false);
   const [zoomOut, setZoomOut] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTypingMessage, setIsTypingMessage] = useState(false);
 
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
@@ -109,7 +111,7 @@ export default function ChatWidget() {
 
       await handleTypingAnimation();
 
-      const res = await fetchWithTimeout("https://chatbot-2-xx4t.onrender.com/chatbot", {
+      const res = await fetchWithTimeout("https://chatbot-2-xx4t.onrender.com//chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message }),
@@ -121,15 +123,16 @@ export default function ChatWidget() {
 
       const data = await res.json();
       
-      if (!data.reply) {
+      if (!data.response) {
         throw new Error('Invalid response format');
       }
 
+      setIsTypingMessage(true);
       setMessages(prev => [...prev, {
-        text: data.reply,
+        text: data.response,
         sender: 'bot'
       }]);
-      setShowBotIcon(true);
+
     } catch (err) {
       console.error('Chat error:', err);
       setMessages(prev => [...prev, {
@@ -138,9 +141,9 @@ export default function ChatWidget() {
           : "Sorry, I couldn't connect to the chatbot server. Please try again later.",
         sender: 'bot'
       }]);
-      setShowBotIcon(true);
     } finally {
       setIsSubmitting(false);
+      setShowBotIcon(true);
     }
   };
 
@@ -242,7 +245,14 @@ export default function ChatWidget() {
                       : 'bg-gray-100 rounded-bl-none text-gray-700'
                   }`}
                 >
-                  {message.text}
+                  {message.sender === 'bot' && index === messages.length - 1 ? (
+                    <TypeWriter 
+                      text={message.text} 
+                      onComplete={() => setIsTypingMessage(false)}
+                    />
+                  ) : (
+                    message.text
+                  )}
                 </div>
               </div>
             ))}
@@ -293,35 +303,39 @@ export default function ChatWidget() {
         .typing-animation {
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
+          padding: 4px 8px;
         }
         
         .typing-animation span {
-          width: 4px;
-          height: 4px;
+          width: 6px;
+          height: 6px;
           background: #4B5563;
           border-radius: 50%;
-          animation: typing 1s infinite ease-in-out;
+          animation: smoothTyping 1.4s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+          opacity: 0.8;
         }
         
         .typing-animation span:nth-child(1) {
-          animation-delay: 0.2s;
+          animation-delay: 0s;
         }
         
         .typing-animation span:nth-child(2) {
-          animation-delay: 0.4s;
+          animation-delay: 0.3s;
         }
         
         .typing-animation span:nth-child(3) {
           animation-delay: 0.6s;
         }
         
-        @keyframes typing {
+        @keyframes smoothTyping {
           0%, 100% {
-            transform: translateY(0);
+            transform: translateY(0px);
+            opacity: 0.4;
           }
           50% {
-            transform: translateY(-4px);
+            transform: translateY(-8px);
+            opacity: 1;
           }
         }
 
@@ -429,6 +443,34 @@ export default function ChatWidget() {
           to {
             transform: scale(1);
             opacity: 1;
+          }
+        }
+
+        .typing-text {
+          display: inline-block;
+          border-right: 2px solid #4B5563;
+          animation: blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes blink-caret {
+          from, to { border-color: transparent }
+          50% { border-color: #4B5563 }
+        }
+
+        /* Add smooth fade in for new messages */
+        .flex {
+          transition: all 0.3s ease-in-out;
+          animation: messageAppear 0.3s ease-in-out;
+        }
+
+        @keyframes messageAppear {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
           }
         }
       `}</style>
