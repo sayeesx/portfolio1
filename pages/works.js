@@ -11,16 +11,16 @@ const Works = () => {
       image: "/assets/healo.jpg",
       tech: "python + react native + supabase + tailwind css",
       timeAgo: "4 months ago",
-      projectLink: "https://example.com/exquio"
+      projectLink: "https://github.com/sayeesx/exquio"
     },
     {
       id: 2,
       title: "Roamio",
-      description: "Travel Guide Platform: Connected travelers with local guides for personalized experiences using Next.js and Supabase. Implemented user authentication, booking system, and real-time chat features.",
+      description: "Developed a platform connecting travelers with local guides for tailored experiences. Implemented an ML-based guide recommendation engine and AI-generated travel itinerary planner based on user preferences.",
       image: "/assets/roamio.png",
-      tech: "Nextjs + mySQL + Java",
+      tech: "Next.js + Supabase + MySQL + Java + Machine Learning + AI",
       timeAgo: "1 year ago",
-      projectLink: "https://example.com/roamio"
+      projectLink: "https://github.com/sayeesx/roamio"
     },
     {
       id: 3,
@@ -29,16 +29,16 @@ const Works = () => {
       image: "/assets/zapit.jpg",
       tech: "React + TypeScript",
       timeAgo: "2 years ago",
-      projectLink: "https://example.com/booking-platform"
+      projectLink: "https://github.com/sayeesx/zapit"
     },
     {
       id: 4,
       title: "Requery",
-      description: "Student Complaint Portal: Complaint submission and tracking for college students. Developed using React and Node.js, implemented user authentication, and real-time notifications.",
+      description: "Student Complaint Portal: Complaint submission and tracking for college students. Developed using HTML, css, javascript and SQL, implemented user authentication, and real-time notifications.",
       image: "/assets/requery.png",
       tech: "html + css + js + MySQL",
       timeAgo: "2 years ago",
-      projectLink: "https://example.com/requery"
+      projectLink: "https://github.com/sayeesx/requery-empire"
     }
   ];
 
