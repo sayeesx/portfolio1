@@ -3,7 +3,7 @@ import { MessageCircle, X, Send, Bot } from 'lucide-react';
 import TypeWriter from './TypeWriter';
 
 // Add this helper function at the top of your component
-const fetchWithTimeout = async (url, options, timeout = 10000) => {
+const fetchWithTimeout = async (url, options, timeout = 2000) => { // Reduced timeout to 2 seconds
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
 
@@ -119,51 +119,60 @@ export default function ChatWidget() {
   };
 
   const handleSendMessage = async (message) => {
-    if (!message.trim() || isSubmitting) return;
+  if (!message.trim() || isSubmitting) return;
 
-    try {
-      setShowQuickActions(false);
-      setIsSubmitting(true);
-      setMessages(prev => [...prev, { text: message, sender: 'user' }]);
-      setInputMessage('');
-      setShowBotIcon(false);
-      setIsTypingMessage(true); // Start typing animation immediately
+  let timeoutId;
+  try {
+    setShowQuickActions(false);
+    setIsSubmitting(true);
+    setMessages(prev => [...prev, { text: message, sender: 'user' }]);
+    setInputMessage('');
+    setShowBotIcon(false);
+    setIsTypingMessage(true);
 
-      const res = await fetchWithTimeout("https://chatbot-2-xx4t.onrender.com//chatbot", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message }),
-      }, 10000);
+       timeoutId = setTimeout(() => {
+      throw new Error('Server taking too long to respond');
+    }, 2000);
 
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
+    const res = await fetchWithTimeout("https://chatbot-2-xx4t.onrender.com//chatbot", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message }),
+    }, 2000); // Reduced timeout to 2 seconds
 
-      const data = await res.json();
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const data = await res.json();
       
-      if (!data.response) {
-        throw new Error('Invalid response format');
-      }
+       if (!data.response) {
+      throw new Error('Invalid response format');
+    }
 
-      // Add response immediately after typing animation
-      setMessages(prev => [...prev, {
-        text: data.response,
-        sender: 'bot'
-      }]);
+    setMessages(prev => [...prev, {
+      text: data.response,
+      sender: 'bot'
+    }]);
 
-    } catch (err) {
-      console.error('Chat error:', err);
+  } catch (err) {
+    clearTimeout(timeoutId);
+    console.error('Chat error:', err);
       setMessages(prev => [...prev, {
-        text: err.message === 'Invalid response format' 
+      text: err.message === 'Server taking too long to respond' 
+        ? "Server seems to be down at the moment. Please try again later."
+        : err.message === 'Invalid response format'
           ? "Received an invalid response from the server."
           : "Sorry, I couldn't connect to the chatbot server. Please try again later.",
-        sender: 'bot'
-      }]);
-    } finally {
-      setIsSubmitting(false);
-      setShowBotIcon(true);
-      setIsTypingMessage(false);
-    }
+      sender: 'bot'
+    }]);
+  } finally {
+    setIsSubmitting(false);
+    setShowBotIcon(true);
+    setIsTypingMessage(false);
+  }
   };
 
   return (
