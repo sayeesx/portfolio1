@@ -123,7 +123,7 @@ export default function Component() {
               <Download className="ml-2 w-4 h-4 text-white transition-all duration-300 ease-in-out transform group-hover:translate-y-0.5" />
             </span>
             <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 bg-black text-white px-3 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap">
-              CV is of May 2025
+              CV is of June 2025
             </div>
           </button>
         </div>
