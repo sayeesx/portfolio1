@@ -12,7 +12,7 @@ export default function ChatBot() {
     setMessages((prev) => [...prev, userMessage]);
 
     try {
-      const res = await fetch("https://chatbot-3-ayjr.onrender.com/", {
+      const res = await fetch("https://chatbot-4cn8.onrender.com/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: input }),
