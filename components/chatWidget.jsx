@@ -1,186 +1,179 @@
-"use client"
+"use client";
 
-import { useState, useRef, useEffect } from "react"
-import { MessageCircle, X, Send, Bot } from "lucide-react"
-import TypeWriter from "./TypeWriter"
+import { useState, useRef, useEffect } from "react";
+import { MessageCircle, X, Send, Bot } from "lucide-react";
+import TypeWriter from "./TypeWriter";
 
-// Fixed timeout function
 const fetchWithTimeout = async (url, options, timeout = 15000) => {
-  // Increased to 15 seconds for Render
-  const controller = new AbortController()
-  const id = setTimeout(() => controller.abort(), timeout)
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
 
   try {
     const response = await fetch(url, {
       ...options,
       signal: controller.signal,
-    })
-    clearTimeout(id)
-    return response
+    });
+    clearTimeout(id);
+    return response;
   } catch (err) {
-    clearTimeout(id)
-    throw err
+    clearTimeout(id);
+    throw err;
   }
-}
+};
 
 export default function ChatWidget() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
-  const [showTooltip, setShowTooltip] = useState(false)
-  const [messages, setMessages] = useState([])
-  const [inputMessage, setInputMessage] = useState("")
-  const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true)
-  const [isTyping, setIsTyping] = useState(false)
-  const [showBotIcon, setShowBotIcon] = useState(true)
-  const [isCompact, setIsCompact] = useState(false)
-  const [zoomOut, setZoomOut] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isTypingMessage, setIsTypingMessage] = useState(false)
-  const [showQuickActions, setShowQuickActions] = useState(true)
+  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [isAutoScrollEnabled, setIsAutoScrollEnabled] = useState(true);
+  const [isTyping, setIsTyping] = useState(false);
+  const [showBotIcon, setShowBotIcon] = useState(true);
+  const [isCompact, setIsCompact] = useState(false);
+  const [zoomOut, setZoomOut] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isTypingMessage, setIsTypingMessage] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(true);
 
   const quickActions = [
-    { text: "👋 Who is Sayees?", query: "who is sayees" },
-    { text: "🎓 Education", query: "education" },
-    { text: "💼 Projects", query: "projects" },
-    { text: "🛠 Skills", query: "skills" },
-    { text: "📍 Location", query: "where are you from" },
-  ]
+    { text: "\uD83D\uDC4B Who is Sayees?", query: "who is sayees" },
+    { text: "\uD83C\uDF93 Education", query: "education" },
+    { text: "\uD83D\uDCBC Projects", query: "projects" },
+    { text: "\uD83D\uDEE0 Skills", query: "skills" },
+    { text: "\uD83D\uDCCD Location", query: "where are you from" },
+  ];
 
-  const messagesEndRef = useRef(null)
-  const messageContainerRef = useRef(null)
+  const messagesEndRef = useRef(null);
+  const messageContainerRef = useRef(null);
 
-  // Auto-scroll effect
   const scrollToBottom = () => {
     if (isAutoScrollEnabled && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
-  // Handle scroll events
   useEffect(() => {
-    const container = messageContainerRef.current
-    let timeoutId
+    const container = messageContainerRef.current;
+    let timeoutId;
 
     const handleScroll = () => {
-      if (!container) return
-      clearTimeout(timeoutId)
-      const isScrolledUp = container.scrollHeight - container.scrollTop - container.clientHeight > 50
-      setIsAutoScrollEnabled(!isScrolledUp)
-      timeoutId = setTimeout(() => setIsAutoScrollEnabled(true), 2000)
-    }
+      if (!container) return;
+      clearTimeout(timeoutId);
+      const isScrolledUp =
+        container.scrollHeight - container.scrollTop - container.clientHeight > 50;
+      setIsAutoScrollEnabled(!isScrolledUp);
+      timeoutId = setTimeout(() => setIsAutoScrollEnabled(true), 2000);
+    };
 
     if (container) {
-      container.addEventListener("scroll", handleScroll)
+      container.addEventListener("scroll", handleScroll);
     }
 
     return () => {
       if (container) {
-        container.removeEventListener("scroll", handleScroll)
+        container.removeEventListener("scroll", handleScroll);
       }
-      clearTimeout(timeoutId)
-    }
-  }, [])
+      clearTimeout(timeoutId);
+    };
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0 || isTyping || isTypingMessage) {
-      scrollToBottom()
+      scrollToBottom();
     }
-  }, [messages, isTyping, isTypingMessage])
+  }, [messages, isTyping, isTypingMessage]);
 
   useEffect(() => {
     const handleResize = () => {
-      const isMobileView = window.innerWidth <= 768
-      setIsMobile(isMobileView)
-      setIsCompact(isMobileView)
-    }
+      const isMobileView = window.innerWidth <= 768;
+      setIsMobile(isMobileView);
+      setIsCompact(isMobileView);
+    };
 
-    handleResize()
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setZoomOut(true)
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [])
+      setZoomOut(true);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
       setMessages([
         {
-          text: "👋 Hi! I'm Sayees's AI assistant. How can I help you today?",
+          text: "\uD83D\uDC4B Hi! I'm Sayees's AI assistant. How can I help you today?",
           sender: "bot",
         },
-      ])
+      ]);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   const handleSendMessage = async (message) => {
-    if (!message.trim() || isSubmitting) return
+    if (!message.trim() || isSubmitting) return;
 
-    let timeoutId
+    let timeoutId;
     try {
-      setShowQuickActions(false)
-      setIsSubmitting(true)
-      setMessages((prev) => [...prev, { text: message, sender: "user" }])
-      setInputMessage("")
-      setShowBotIcon(false)
-      setIsTypingMessage(true)
+      setShowQuickActions(false);
+      setIsSubmitting(true);
+      setMessages((prev) => [...prev, { text: message, sender: "user" }]);
+      setInputMessage("");
+      setShowBotIcon(false);
+      setIsTypingMessage(true);
 
-      // Set a longer timeout for Render's free tier
       timeoutId = setTimeout(() => {
-        throw new Error("Server taking too long to respond")
-      }, 15000) // 15 seconds
+        throw new Error("Server taking too long to respond");
+      }, 15000);
 
-      // ✅ FIXED: Correct URL and endpoint
       const res = await fetchWithTimeout(
         "https://chatbot-4cn8.onrender.com/api/chat",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message }), // ✅ FIXED: Correct field name
+          body: JSON.stringify({ message }),
         },
-        15000,
-      ) // 15 second timeout
+        15000
+      );
 
-      clearTimeout(timeoutId)
+      clearTimeout(timeoutId);
 
       if (!res.ok) {
-        const errorText = await res.text()
-        console.error("Server error:", errorText)
-        throw new Error(`HTTP error! status: ${res.status}`)
+        const errorText = await res.text();
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
 
-      const data = await res.json()
-      console.log("API Response:", data) // Debug log
+      const data = await res.json();
 
-      // ✅ FIXED: Check for correct response field based on your API
       if (!data || !data.response) {
-        console.error("Invalid response:", data)
-        throw new Error("Invalid response format")
+        throw new Error("Invalid response format");
       }
 
       setMessages((prev) => [
         ...prev,
         {
-          text: data.response, // ✅ FIXED: Correct field name
+          text: data.response,
           sender: "bot",
         },
-      ])
+      ]);
     } catch (err) {
-      clearTimeout(timeoutId)
-      console.error("Chat error:", err)
+      clearTimeout(timeoutId);
 
-      let errorMessage = "Sorry, I couldn't connect to the chatbot server. Please try again later."
+      let errorMessage = "Sorry, I couldn't connect to the chatbot server. Please try again later.";
 
-      if (err.name === "AbortError" || err.message === "Server taking too long to respond") {
-        errorMessage = "Server seems to be down at the moment. Please try again later."
+      if (
+        err.name === "AbortError" ||
+        err.message === "Server taking too long to respond"
+      ) {
+        errorMessage = "Server seems to be down at the moment. Please try again later.";
       } else if (err.message === "Invalid response format") {
-        errorMessage = "Received an invalid response from the server."
+        errorMessage = "Received an invalid response from the server.";
       } else if (err.message.includes("HTTP error!")) {
-        errorMessage = "The server encountered an error. Please try again later."
+        errorMessage = "The server encountered an error. Please try again later.";
       }
 
       setMessages((prev) => [
@@ -189,13 +182,13 @@ export default function ChatWidget() {
           text: errorMessage,
           sender: "bot",
         },
-      ])
+      ]);
     } finally {
-      setIsSubmitting(false)
-      setShowBotIcon(true)
-      setIsTypingMessage(false)
+      setIsSubmitting(false);
+      setShowBotIcon(true);
+      setIsTypingMessage(false);
     }
-  }
+  };
 
   return (
     <>
