@@ -12,7 +12,7 @@ export const metadata = {
 const Layout = ({ children }) => {
   return (
     <div className={styles.layoutWrapper}>
-      <main className={styles.mainContent}>
+      <main className={styles.mainContent} style={{ margin: 0, padding: 0 }}>
         {children}
       </main>
     </div>

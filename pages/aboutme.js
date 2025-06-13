@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react"
 import Layout from "../components/Layout"
+import { ArrowRight } from "lucide-react"
+import Link from "next/link"
 
 export default function About() {
   const timelineData = [
@@ -64,13 +66,14 @@ export default function About() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setActiveSection(Number(entry.target.getAttribute("data-id")))
+            const sectionId = Number(entry.target.getAttribute("data-id"))
+            setActiveSection(sectionId)
           }
         })
       },
       {
-        threshold: 0.5,
-        rootMargin: "-20% 0px -20% 0px",
+        threshold: [0.2, 0.4, 0.6, 0.8],
+        rootMargin: "-5% 0px -5% 0px",
       },
     )
 
@@ -78,18 +81,43 @@ export default function About() {
       if (ref) observer.observe(ref)
     })
 
-    // Handle scroll for back button visibility
+    // Handle scroll for back button visibility and fluid animation
     const handleScroll = () => {
       const currentScrollY = window.scrollY
+      const scrollThreshold = 50
 
-      // Hide button when scrolling down, show when scrolling up
-      if (currentScrollY > lastScrollY + 5) {
+      if (currentScrollY > lastScrollY + scrollThreshold) {
         setShowBackButton(false)
-      } else if (currentScrollY < lastScrollY - 5) {
+      } else if (currentScrollY < lastScrollY - scrollThreshold) {
         setShowBackButton(true)
       }
 
       setLastScrollY(currentScrollY)
+      
+      // Update fluid height based on active section
+      if (timelineLineRef.current && containerRef.current) {
+        const totalSections = timelineData.length
+        const sectionHeight = 100 / (totalSections - 1)
+        const targetHeight = activeSection * sectionHeight
+        
+        // Ensure the fluid moves dot by dot
+        const currentHeight = parseFloat(timelineLineRef.current.style.height) || 0
+        const nextDotHeight = Math.min(
+          Math.ceil(currentHeight / sectionHeight) * sectionHeight,
+          100
+        )
+        
+        // Only update if we're not at the target height
+        if (Math.abs(currentHeight - targetHeight) > 0.5) {
+          const newHeight = currentHeight + (nextDotHeight - currentHeight) * 0.05
+          timelineLineRef.current.style.height = `${newHeight}%`
+        }
+      }
+    }
+
+    // Initial fluid height
+    if (timelineLineRef.current) {
+      timelineLineRef.current.style.height = "0%"
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true })
@@ -100,23 +128,7 @@ export default function About() {
       })
       window.removeEventListener("scroll", handleScroll)
     }
-  }, [lastScrollY])
-
-  // Calculate fluid height based on active section
-  useEffect(() => {
-    if (timelineLineRef.current && containerRef.current) {
-      // For more accurate fluid filling, calculate percentage based on active section
-      // If we're at the last section (5), fill 100%
-      if (activeSection === timelineData.length) {
-        timelineLineRef.current.style.height = "100%"
-      } else {
-        // Otherwise calculate the percentage based on active section
-        // We need to account for the spacing between dots
-        const fillPercentage = ((activeSection - 0.5) / (timelineData.length - 1)) * 100
-        timelineLineRef.current.style.height = `${fillPercentage}%`
-      }
-    }
-  }, [activeSection, timelineData.length])
+  }, [lastScrollY, activeSection, timelineData.length])
 
   const toggleCard = (id) => {
     setFlippedCards((prev) => ({
@@ -152,23 +164,30 @@ export default function About() {
         }
 
         .timeline-container {
-          padding-top: 1700px;
-          padding-bottom: 300px;
+          padding-top: 100px;
+          padding-bottom: 50px;
           position: relative;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
         }
         
         .timeline-line {
           position: relative;
+          height: calc(100% - 50px);
+          flex: 1;
+          display: flex;
+          flex-direction: column;
         }
 
         .timeline-line::before {
           content: '';
           position: absolute;
           left: 50%;
-          top: -95px;
+          top: 0;
           transform: translateX(-50%);
           width: 4px;
-          height: 118%;
+          height: 90%;
           background: rgba(200, 200, 200, 0.3);
           z-index: 1;
         }
@@ -176,24 +195,37 @@ export default function About() {
         .timeline-fluid {
           position: absolute;
           left: 50%;
-          top: -95px;
+          top: 0;
           transform: translateX(-50%);
-          width: 4px;
+          width: 6px;
           height: 0%;
-          background: linear-gradient(180deg, 
-            rgba(59, 130, 246, 0.8) 0%, 
-            rgba(59, 130, 246, 1) 50%,
-            rgba(59, 130, 246, 0.8) 100%
-          );
+          background: #1d4ed8;
           z-index: 2;
-          transition: height 0.8s ease-in-out;
-          background-size: 400% 400%;
-          animation: flow 8s linear infinite;
+          transition: height 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        .timeline-fluid::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(180deg, 
+            #1d4ed8 0%, 
+            #2563eb 50%,
+            #1d4ed8 100%
+          );
+          animation: flow 15s ease-in-out infinite;
+          background-size: 200% 200%;
+          box-shadow: 0 0 15px rgba(37, 99, 235, 0.7);
         }
 
         .ripple {
           position: absolute;
           width: 100%;
+          z-index: 4;
           height: 100%;
           border-radius: 50%;
           border: 2px solid #3b82f6;
@@ -213,6 +245,8 @@ export default function About() {
           backdrop-filter: blur(10px);
           border: 1px solid rgba(255, 255, 255, 0.2);
           box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+          position: relative;
+          z-index: 3;
         }
 
         .card-flip {
@@ -242,29 +276,38 @@ export default function About() {
         .final-timeline-item {
           width: 100%;
           max-width: 300px;
-          margin-left: auto;
-          margin-right: auto;
-          padding-top: 2rem;
-          position: absolute;
-          bottom: 50;
-          left: 50%;
-          transform: translateX(-50%);
+          margin: 0 auto;
+          padding-top: 1rem;
+          position: relative;
+          z-index: 3;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
         }
 
         .final-timeline-dot {
-          margin-top: -200px;
-          left: 50%;
-          transform: translateX(-50%);
+          position: absolute;
           width: 8px !important;
           height: 8px !important;
+          left: 48.5%;
+          top: 52px;
+          transform: translateX(-50%);
+          z-index: 4;
         }
 
         .final-timeline-card {
-          transform: translateY(0) !important;
-          text-align: center !important;
-          margin-top: 1rem;
           width: 300px;
-          height: auto !important;
+          margin: 3rem auto 0;
+          text-align: center;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+          position: relative;
+          z-index: 3;
+          padding: 1.5rem;
+          color: black !important;
         }
         
         .timeline-heading {
@@ -276,23 +319,31 @@ export default function About() {
           background: rgba(59, 130, 246, 0.1);
           border-radius: 0.5rem;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-          margin: 1rem 0 6rem 0;
+          margin: 0.5rem 0 1.5rem 0;
+          position: relative;
+          z-index: 10;
         }
 
         .back-button {
-          position: absolute;
-          top: 20px;
-          left: 20px;
+          position: fixed;
+          top: 12px;
+          left: 6px;
           z-index: 1000;
-          padding: 10px 15px;
-          background-color: #3b82f6;
-          color: white;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 8px 16px;
+          background: transparent;
+          color: black;
           border: none;
-          border-radius: 5px;
-          font-weight: bold;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          font-weight: 500;
+          font-size: 0.75rem;
           cursor: pointer;
-          transition: opacity 0.3s ease, transform 0.3s ease;
+          transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+          color: #3d5be0;
         }
 
         .back-button.hidden {
@@ -301,7 +352,100 @@ export default function About() {
           pointer-events: none;
         }
 
+        .skills-button {
+          position: fixed;
+          top: 12px;
+          right: 6px;
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 8px 16px;
+          background: transparent;
+          color: black;
+          border: none;
+          font-weight: 500;
+          font-size: 0.75rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .skills-button:hover {
+          color: #3d5be0;
+        }
+
+        .skills-button.hidden {
+          opacity: 0;
+          transform: translateY(-20px);
+          pointer-events: none;
+        }
+
+        .card-front {
+          color: black !important;
+        }
+
+        .card-front h3 {
+          color: black !important;
+        }
+
+        .card-front p {
+          color: black !important;
+        }
+
+        .card-front span {
+          color: black !important;
+        }
+
+        .card-back {
+          color: black !important;
+        }
+
+        .card-back p {
+          color: black !important;
+        }
+
+        .final-timeline-card h3 {
+          color: black !important;
+        }
+
+        .final-timeline-card p {
+          color: black !important;
+        }
+
+        .final-timeline-card span {
+          color: black !important;
+        }
+
+        .text-gray-600 {
+          color: black !important;
+        }
+
+        .text-gray-500 {
+          color: black !important;
+        }
+
+        .bg-blue-100 {
+          background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+
+        .text-blue-800 {
+          color: black !important;
+        }
+
         @media (max-width: 768px) {
+          .timeline-container {
+            padding-top: 80px;
+            padding-bottom: 30px;
+          }
+
+          .timeline-heading {
+            margin: 0.25rem 0 1rem 0;
+          }
+
+          .final-timeline-item {
+            padding-top: 0.5rem;
+          }
+
           .timeline-heading {
             font-size: 1.25rem !important;
           }
@@ -329,8 +473,8 @@ export default function About() {
           }
 
           .final-timeline-card {
-            width: 250px !important;
-            padding: 0.75rem !important;
+            width: 250px;
+            padding: 1rem;
           }
           
           .timeline-container * {
@@ -338,7 +482,7 @@ export default function About() {
           }
 
           .final-timeline-dot {
-            margin-top: -200px;
+            margin-top: 0;
             left: 50% !important;
             transform: translateX(-50%) !important;
           }
@@ -346,31 +490,39 @@ export default function About() {
       `}</style>
 
       <button onClick={() => (window.location.href = "/")} className={`back-button ${showBackButton ? "" : "hidden"}`}>
+        <ArrowRight className="w-3 h-3 rotate-180" />
         Back to Home
       </button>
 
-      <div ref={containerRef} className="max-w-4xl mx-auto px-4 py-8 timeline-container">
-        <h1 className="text-4xl font-bold text-center mb-8 text-black">About Me</h1>
-        <p className="max-w-2xl mx-auto mb-24 text-gray-600 text-center glassmorphic p-6 rounded-xl">
+      <Link href="/skills" className={`skills-button ${showBackButton ? "" : "hidden"}`}>
+        My Skills
+        <ArrowRight className="w-3 h-3" />
+      </Link>
+
+      <div ref={containerRef} className="max-w-4xl mx-auto px-4 py-2 timeline-container">
+        <h1 className="text-4xl font-bold text-center mb-2 text-black">About Me</h1>
+        <p className="max-w-2xl mx-auto mb-8 text-black text-center glassmorphic p-6 rounded-xl">
           I am a student pursuing a Bachelor&apos;s degree in Computer Applications and currently an intern at Cyber
           Square. I specialize in building startups and websites, with experience in trading and development.
         </p>
 
-        <h2 className="timeline-heading">My Journey</h2>
+        <h2 className="timeline-heading text-black">My Journey</h2>
 
         <div className="relative timeline-line">
-          <div ref={timelineLineRef} className="timeline-fluid"></div>
+          <div ref={timelineLineRef} className="timeline-fluid" style={{ height: "0%" }}></div>
           {timelineData.map((item, index) => (
             <div
               key={item.id}
               ref={(el) => (timelineRefs.current[index] = el)}
               data-id={item.id}
-              className={`relative flex items-center transition-all duration-500 ${item.isFinal ? "final-timeline-item" : "mb-24"}
-                ${activeSection === item.id ? "opacity-100 scale-105" : "opacity-50 scale-100"}`}
+              className={`relative flex items-center transition-all duration-500 ${
+                item.isFinal ? "final-timeline-item" : "mb-12"
+              } ${activeSection === item.id ? "opacity-100 scale-105" : "opacity-50 scale-100"}`}
             >
               {/* Animated dot */}
               <div
                 className={`absolute left-1/2 transform -translate-x-1/2 ${item.isFinal ? "final-timeline-dot" : ""}`}
+                style={{ zIndex: item.isFinal ? 4 : 3 }}
               >
                 <div
                   className={`w-4 h-4 rounded-full transition-all duration-300 relative ${
