@@ -1,51 +1,14 @@
 /* components/Layout.module.css */
-.topbar {
-  background-color: rgba(0, 0, 0, 0.256); /* Semi-transparent black for the top bar */
-  color: #fff; /* White text color */
-  padding: 10px 20px; /* Padding for the top bar */
-  position: fixed; /* Fix the top bar at the top */
-  z-index: 1000; /* Ensure it's above other content */
-  top: 10px; /* Position it slightly below the very top */
-  left: 50%; /* Center the top bar horizontally */
-  transform: translateX(-50%); /* Adjust position to be truly centered */
-  border-radius: 15px; /* Curved edges */
-  box-shadow: 0 4px 10px rgb(0, 0, 0); /* Shadow for depth */
-  display: flex; /* Flexbox for alignment */
-  justify-content: space-around; /* Space out the links evenly */
-  max-width: 100%; /* Set a maximum width for the top bar */
-}
-
-
-.navList {
-  list-style-type: none; /* Remove default list styles */
-  display: flex; /* Flexbox layout */
-  margin: 0;/* Remove default margin */
-  padding: 0; /* Remove default padding */
-}
-
-.navList li {
-  padding: 0 10px; /* Spacing around each link */
-}
-
-.navList li a {
-  text-decoration: none; /* Remove underline from links */
-  color:#fff; /* White text for links */
-  transition: color 0.3s ease, transform 0.3s ease; /* Animation for hover */
-}
-
-.navList li a:hover {
-  color: #5376ff; /* Change text color on hover */
-  transform: scale(1.1); /* Slightly enlarge text on hover */
-}
-
-.active {
-  border-bottom: 2px solid #5376ff; /* Highlight active page with underline */
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f3f5;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .mainContent {
-  margin-top: 60px; /* Space for the fixed top bar */
-  padding: 20px; /* Padding for the main content */
-  color: #fff; /* White text for the main content */
-  height: calc(100vh - 60px); /* Fill the remaining height below the top bar */
-  overflow-y: auto; /* Allow scrolling of the main content if it overflows */
+  flex: 1;
+  width: 100%;
+  position: relative;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { MessageCircle, X, Send, Bot } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, Book, Code, MapPin } from "lucide-react";
 import TypeWriter from "./TypeWriter";
 
 const fetchWithTimeout = async (url, options, timeout = 15000) => {
@@ -35,35 +35,41 @@ export default function ChatWidget() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTypingMessage, setIsTypingMessage] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const [currentIcon, setCurrentIcon] = useState('chat'); // Add this state
 
   const quickActions = [
-    { text: "\uD83D\uDC4B Who is Sayees?", query: "who is sayees" },
-    { text: "\uD83C\uDF93 Education", query: "education" },
-    { text: "\uD83D\uDCBC Projects", query: "projects" },
-    { text: "\uD83D\uDEE0 Skills", query: "skills" },
-    { text: "\uD83D\uDCCD Location", query: "where are you from" },
+    { text: "Who is Sayees?", query: "who is sayees", icon: <User className="h-4 w-4" /> },
+    { text: "Education", query: "education", icon: <Book className="h-4 w-4" /> },
+    { text: "Projects", query: "projects", icon: <Code className="h-4 w-4" /> },
+    { text: "Skills", query: "skills", icon: <Code className="h-4 w-4" /> },
+    { text: "Location", query: "where are you from", icon: <MapPin className="h-4 w-4" /> },
   ];
 
   const messagesEndRef = useRef(null);
   const messageContainerRef = useRef(null);
 
-  const scrollToBottom = () => {
-    if (isAutoScrollEnabled && messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  useEffect(() => {
+    if (messages.length > 0 || isTypingMessage) {
+      setTimeout(() => {
+        scrollToBottom();
+      }, 0);
+    }
+  }, [messages, isTypingMessage]);
+
+  const scrollToBottom = (smooth = true) => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: smooth ? "smooth" : "instant" });
     }
   };
 
   useEffect(() => {
     const container = messageContainerRef.current;
-    let timeoutId;
 
     const handleScroll = () => {
       if (!container) return;
-      clearTimeout(timeoutId);
-      const isScrolledUp =
-        container.scrollHeight - container.scrollTop - container.clientHeight > 50;
-      setIsAutoScrollEnabled(!isScrolledUp);
-      timeoutId = setTimeout(() => setIsAutoScrollEnabled(true), 2000);
+      // If the user has scrolled up more than a threshold, disable smooth scrolling
+      const isScrolledUp = container.scrollHeight - container.scrollTop - container.clientHeight > 100;
+      scrollToBottom(!isScrolledUp, false); // Disable smooth scroll if scrolled up
     };
 
     if (container) {
@@ -74,15 +80,8 @@ export default function ChatWidget() {
       if (container) {
         container.removeEventListener("scroll", handleScroll);
       }
-      clearTimeout(timeoutId);
     };
   }, []);
-
-  useEffect(() => {
-    if (messages.length > 0 || isTyping || isTypingMessage) {
-      scrollToBottom();
-    }
-  }, [messages, isTyping, isTypingMessage]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -190,64 +189,63 @@ export default function ChatWidget() {
     }
   };
 
+  // Add this effect for icon animation
+  useEffect(() => {
+    const icons = ['chat', 'thinking', 'robot'];
+    let currentIndex = 0;
+
+    const intervalId = setInterval(() => {
+      currentIndex = (currentIndex + 1) % icons.length;
+      setCurrentIcon(icons[currentIndex]);
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const renderIcon = () => {
+    switch(currentIcon) {
+      case 'chat':
+        return (
+          <svg className={`w-6 h-6 ${!isMobile && "mr-2"}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+          </svg>
+        );
+      case 'thinking':
+        return <span className="text-xl mr-2">💭</span>;
+      case 'robot':
+        return <span className="text-xl mr-2">🤖</span>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        onTouchStart={() => setShowTooltip(true)}
-        onTouchEnd={() => setTimeout(() => setShowTooltip(false), 2000)}
-        className={`
-          flex items-center justify-center bg-blue-900 text-white rounded-full
-          hover:bg-blue-800
-          shadow-lg hover:shadow-xl
-          active:transform active:scale-95
-          relative
-          border border-blue-400
-          before:absolute before:inset-[-2px]
-          before:rounded-full before:border-2
-          before:border-blue-400/50
-          before:animate-border-flow
-          overflow-visible
-          transition-all duration-500 ease-out
-          transform origin-center
-          ${zoomOut ? "scale-100 opacity-100" : "scale-90 opacity-0"}
-          ${isMobile ? "w-12 h-12 min-w-0 p-0" : "w-auto min-w-[140px] px-4 py-2"}
-        `}
-        aria-label="Open chat"
-      >
-        <div
+      <div className="backdrop-blur-md bg-white/10 rounded-full shadow-lg">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
           className={`
-            flex items-center justify-center
-            transition-all duration-500 ease-in-out
-            ${isMobile ? "scale-90" : "scale-100 gap-2"}
-            w-full
+            flex items-center justify-center text-black
+            rounded-full
+            hover:bg-white/20
+            transition-all duration-300
+            relative
+            border border-[#3d5be0]/50
+            before:absolute before:inset-[-2px]
+            before:rounded-full before:border-2
+            before:border-[#3d5be0]/30
+            before:animate-border-flow
+            overflow-visible
+            transform origin-center
+            ${zoomOut ? "scale-100 opacity-100" : "scale-90 opacity-0"}
+            ${isMobile ? "w-12 h-12 min-w-0 p-0" : "w-auto min-w-[140px] px-4 py-2"}
           `}
+          aria-label="Open chat"
         >
-          <div className="relative w-5 h-5 flex items-center justify-center">
-            <div
-              className={`
-                absolute inset-0
-                transition-all duration-300 ease-in-out
-                flex items-center justify-center
-                ${showBotIcon ? "opacity-100 scale-100" : "opacity-0 scale-0"}
-              `}
-            >
-              <Bot className="w-5 h-5" />
-            </div>
-            <div
-              className={`
-                absolute inset-0
-                transition-all duration-300 ease-in-out
-                flex items-center justify-center
-                ${!showBotIcon ? "opacity-100 scale-100" : "opacity-0 scale-0"}
-              `}
-            >
-              <MessageCircle className="w-5 h-5" />
-            </div>
-          </div>
-          {!isMobile && <span className="text-xs whitespace-nowrap ml-2">Ask me anything</span>}
-        </div>
-      </button>
+          {renderIcon()}
+          {!isMobile && <span className="font-medium">Let's Chat</span>}
+        </button>
+      </div>
 
       {isOpen && (
         <div
@@ -295,10 +293,9 @@ export default function ChatWidget() {
                   <button
                     key={index}
                     onClick={() => handleSendMessage(action.query)}
-                    className="px-3 py-1.5 text-sm bg-blue-50 text-blue-900 rounded-full 
-                      hover:bg-blue-100 transition-colors duration-200 
-                      border border-blue-200 flex items-center gap-1"
+                    className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors duration-200 border border-gray-200 flex items-center gap-1"
                   >
+                    {action.icon}
                     {action.text}
                   </button>
                 ))}
@@ -338,8 +335,7 @@ export default function ChatWidget() {
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isSubmitting}
-                className="p-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 
-                  transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />

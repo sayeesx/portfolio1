@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
 body {
   font-family: 'DM Sans', sans-serif;
   background-color: #000000;
@@ -11,8 +16,19 @@ body {
   margin: 0;
   padding: 0;
   height: 100vh;
-  overflow: hidden;
-  box-shadow: -4px 0 6px -1px rgba(128, 128, 128, 0.1);
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 /* Additional styles for better contrast and readability */
@@ -29,6 +45,7 @@ body {
     @apply text-gray-300;
   }
 }
+
 @keyframes reflection {
   0% {
     transform: translateX(-100%) skew(-45deg);
@@ -69,8 +86,8 @@ body {
 }
 
 /* Ensure all content is visible without scrolling */
-#__next, .layout-wrapper {
-  height: 100vh;
+#__next {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
@@ -79,9 +96,8 @@ main {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 1rem;
+  width: 100%;
+  position: relative;
 }
 
 /* Hide scrollbars */

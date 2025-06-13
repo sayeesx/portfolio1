@@ -3,7 +3,7 @@
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
-  top: 100px;
+  margin-top: 200px;
   background-color: #f0f0f0;
   border-radius: 20px;
   box-shadow: 8px 8px 16px #000000, -8px -8px 16px #000000; /* Neomorphic outer shadow */
@@ -91,10 +91,10 @@
 }
 
 .mainContent {
-  margin-top: 60px;
+  margin-top: 100px;
   padding: 20px;
   color: #fff;
-  height: calc(100vh - 60px);
+  height: calc(100vh - 100px);
   overflow-y: auto;
 }
 
