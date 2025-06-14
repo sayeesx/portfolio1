@@ -7,16 +7,16 @@
 html {
   scroll-behavior: smooth;
   height: 100%;
+  overflow-x: hidden;
 }
 
 body {
   font-family: 'DM Sans', sans-serif;
-  background-color: #000000;
-  color: #ecf0f1;
+  background-color: white;
+  color: #000000;
   margin: 0;
   padding: 0;
-  height: 100vh;
-  overflow-y: auto;
+  min-height: 100vh;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
@@ -34,15 +34,15 @@ body {
 /* Additional styles for better contrast and readability */
 @layer base {
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-gray-100;
+    @apply font-bold text-black;
   }
 
   a {
-    @apply text-blue-400 hover:text-blue-300 transition-colors;
+    @apply text-[#3d5be0] hover:text-[#2d4bd0] transition-colors;
   }
 
   p {
-    @apply text-gray-300;
+    @apply text-black;
   }
 }
 
@@ -90,6 +90,8 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 main {
@@ -98,6 +100,7 @@ main {
   flex-direction: column;
   width: 100%;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Hide scrollbars */
@@ -108,4 +111,19 @@ main {
 
 *::-webkit-scrollbar {
   display: none;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  body {
+    overflow-x: hidden;
+  }
+
+  main {
+    overflow-x: hidden;
+  }
+
+  #__next {
+    overflow-x: hidden;
+  }
 }
