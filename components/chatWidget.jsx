@@ -221,19 +221,19 @@ export default function ChatWidget() {
 
   return (
     <>
-      <div className="backdrop-blur-md bg-white/10 rounded-full shadow-lg">
+      <div className="backdrop-blur-md bg-white/30 border border-white/40 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
         <button
           onClick={() => setIsOpen(!isOpen)}
           className={`
             flex items-center justify-center text-black
             rounded-full
-            hover:bg-white/20
+            hover:bg-black/5
             transition-all duration-300
             relative
-            border border-[#3d5be0]/50
+            border border-black/20
             before:absolute before:inset-[-2px]
             before:rounded-full before:border-2
-            before:border-[#3d5be0]/30
+            before:border-black/20
             before:animate-border-flow
             overflow-visible
             transform origin-center
@@ -250,27 +250,29 @@ export default function ChatWidget() {
       {isOpen && (
         <div
           className={`fixed bottom-24 ${isMobile ? "right-2 w-72" : "right-8 w-80"} 
-          h-[400px] bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-gray-200`}
+          h-[400px] bg-white rounded-lg shadow-2xl flex flex-col z-50 border border-white/40
+          transform transition-all duration-300 ease-in-out
+          hover:shadow-3d`}
         >
-          <div className="flex items-center justify-between p-3 border-b bg-blue-900 text-white rounded-t-lg">
+          <div className="flex items-center justify-between p-3 border-b border-white/40 bg-[#3d5be0] text-white rounded-t-lg">
             <h3 className="font-semibold text-sm">Chat with Sayees</h3>
             <button
               onClick={() => setIsOpen(false)}
-              className="p-1 hover:bg-blue-800 rounded-full transition-colors"
+              className="p-1 hover:bg-[#2d4bd0] rounded-full transition-colors"
               aria-label="Close chat"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div ref={messageContainerRef} className="flex-1 overflow-y-auto p-3 space-y-3">
+          <div ref={messageContainerRef} className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
             {messages.map((message, index) => (
               <div key={index} className={`flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}>
                 <div
-                  className={`p-2 rounded-lg text-sm max-w-xs break-words ${
+                  className={`p-2 rounded-lg text-sm max-w-xs break-words transform transition-all duration-300 hover:scale-105 ${
                     message.sender === "user"
-                      ? "bg-blue-900 text-white rounded-br-none"
-                      : "bg-gray-100 rounded-bl-none text-gray-700"
+                      ? "bg-[#3d5be0] text-white rounded-br-none shadow-lg"
+                      : "bg-gray-100 rounded-bl-none text-black shadow-md"
                   }`}
                 >
                   {message.sender === "bot" && index === messages.length - 1 ? (
@@ -293,7 +295,7 @@ export default function ChatWidget() {
                   <button
                     key={index}
                     onClick={() => handleSendMessage(action.query)}
-                    className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors duration-200 border border-gray-200 flex items-center gap-1"
+                    className="px-3 py-1 text-sm bg-gray-100 border border-gray-200 text-black rounded-full hover:bg-[#3d5be0] hover:text-white transition-all duration-300 transform hover:scale-105 shadow-md"
                   >
                     {action.icon}
                     {action.text}
@@ -304,7 +306,7 @@ export default function ChatWidget() {
 
             {isTypingMessage && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 rounded-lg p-2 text-gray-700 rounded-bl-none">
+                <div className="bg-gray-100 border border-gray-200 rounded-lg p-2 text-black rounded-bl-none shadow-md">
                   <div className="typing-animation">
                     <span></span>
                     <span></span>
@@ -316,7 +318,7 @@ export default function ChatWidget() {
             <div ref={messagesEndRef} />
           </div>
 
-          <div className="p-3 border-t border-gray-200">
+          <div className="p-3 border-t border-white/40 bg-white">
             <form
               onSubmit={(e) => {
                 e.preventDefault()
@@ -329,13 +331,13 @@ export default function ChatWidget() {
                 value={inputMessage}
                 onChange={(e) => setInputMessage(e.target.value)}
                 placeholder="Type your message..."
-                className="flex-1 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-900 text-sm text-black placeholder:text-gray-500"
+                className="flex-1 p-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3d5be0] text-sm text-black placeholder:text-black/50 transition-all duration-300 hover:border-[#3d5be0]/50"
                 disabled={isSubmitting}
               />
               <button
                 type="submit"
                 disabled={!inputMessage.trim() || isSubmitting}
-                className="p-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="p-2 bg-[#3d5be0] text-white rounded-lg hover:bg-[#2d4bd0] transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
               >
                 {isSubmitting ? (
                   <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
@@ -360,7 +362,7 @@ export default function ChatWidget() {
         .typing-animation span {
           width: 6px;
           height: 6px;
-          background: #6b7280;
+          background: #3d5be0;
           border-radius: 50%;
           animation: typing 1.4s infinite ease-in-out;
         }
@@ -391,6 +393,22 @@ export default function ChatWidget() {
 
         .animate-border-flow {
           animation: border-flow 3s linear infinite;
+        }
+
+        .shadow-3d {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                    0 4px 6px -2px rgba(0, 0, 0, 0.05),
+                    0 1px 0 rgba(255, 255, 255, 0.1) inset;
+        }
+
+        .shadow-md {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .shadow-lg {
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                    0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
       `}</style>
     </>

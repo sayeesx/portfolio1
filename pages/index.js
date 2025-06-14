@@ -16,17 +16,33 @@ import TypeWriter from "../components/TypeWriter"
 import AspiringRoleCube from "../components/AspiringRoleCube"
 import Image from 'next/image'
 
+// Add skills data
+const skills = [
+  { name: 'JavaScript', logo: '/img/javascript.svg' },
+  { name: 'HTML', logo: '/img/html.svg' },
+  { name: 'CSS', logo: '/img/css.svg' },
+  { name: 'React', logo: '/img/react.svg' },
+  { name: 'Next.js', logo: '/img/nextjs.svg' },
+  { name: 'Python', logo: '/img/python.svg' },
+  { name: 'TensorFlow', logo: '/img/tensorflow.png' },
+  { name: 'Pandas', logo: '/img/pandas.svg' },
+  { name: 'C++', logo: '/img/cpp.svg' },
+  { name: 'Java', logo: '/img/java.svg' },
+  { name: 'SQL', logo: '/img/sql.svg' },
+]
+
 export default function Component() {
   const router = useRouter()
   const [zoomOut, setZoomOut] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [hoveredCard, setHoveredCard] = useState(null)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [showNavButtons, setShowNavButtons] = useState(true)
+  const [showNavButtons, setShowNavButtons] = useState(false) // Changed to false initially
   const [email, setEmail] = useState('')
   const [emailStatus, setEmailStatus] = useState(null) // null, 'success', or 'error'
   const [isProjectsVisible, setIsProjectsVisible] = useState(false)
   const [isContactVisible, setIsContactVisible] = useState(false)
+  const [isSuperpowersVisible, setIsSuperpowersVisible] = useState(false)
 
   // Scroll detection for hiding elements
   useEffect(() => {
@@ -113,6 +129,14 @@ export default function Component() {
       timeAgo: "2 years ago",
       projectLink: "https://github.com/sayeesx/requery-empire",
     },
+    {
+      id: 5,
+      title: "Coming Soon",
+      image: "/assets/coming-soon.jpg",
+      tech: "New Project in Development",
+      timeAgo: "Coming Soon",
+      projectLink: "#",
+    },
   ]
 
   const certifications = [
@@ -175,6 +199,33 @@ export default function Component() {
     }
   }, [])
 
+  // Add useEffect for nav buttons fade in
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowNavButtons(true)
+    }, 1000) // Delay of 1 second
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Add Intersection Observer for superpowers section
+  useEffect(() => {
+    const superpowersObserver = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsSuperpowersVisible(true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    const superpowersSection = document.getElementById('superpowers-section')
+    if (superpowersSection) superpowersObserver.observe(superpowersSection)
+
+    return () => {
+      if (superpowersSection) superpowersObserver.unobserve(superpowersSection)
+    }
+  }, [])
+
   return (
     <Layout>
       <Head>
@@ -182,37 +233,43 @@ export default function Component() {
         <meta name="description" content="Portfolio of Muhammed Sayees" />
       </Head>
 
-      {/* Navigation Buttons */}
-      <div className={`fixed top-12 right-6 z-50 flex gap-2 transition-all duration-300 ${showNavButtons ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
-        <Link href="/aboutme" className="group flex items-center gap-1 px-2 py-1 text-black hover:text-[#3d5be0] transition-all duration-300 text-xs">
-          About Me
-          <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-        </Link>
-        <Link href="/skills" className="group flex items-center gap-1 px-2 py-1 border border-black text-black rounded-full hover:bg-black/5 transition-all duration-300 text-xs">
-          Show My Skills
-          <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-        </Link>
-      </div>
+      {/* Navigation Buttons - Updated with fade-in animation */}
+      <Link href="/contact" className={`fixed top-12 left-6 z-50 flex items-center gap-1 px-2 py-1 text-black hover:text-[#3d5be0] transition-all duration-300 text-xs ${showNavButtons ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+        <ArrowRight className="w-3 h-3 rotate-180 group-hover:-translate-x-1 transition-transform" />
+        Contact Me
+      </Link>
+
+      <Link href="/aboutme" className={`fixed top-12 right-6 z-50 flex items-center gap-1 px-2 py-1 border border-black text-black rounded-full hover:bg-black/5 transition-all duration-300 text-xs ${showNavButtons ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'}`}>
+        About Me
+        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+      </Link>
 
       {/* Hero Section - Shifted down with more padding and centered */}
-      <section className="min-h-[85vh] flex items-center justify-center pt-32 pb-0">
+      <section className="min-h-[85vh] md:min-h-[85vh] min-h-[60vh] flex items-center justify-center pt-32 md:pt-32 pt-40 pb-0">
         {/* Content - Centered with more padding */}
         <div
-          className={`flex flex-col items-center justify-center text-center px-4 py-12 transform transition-all duration-1000 ease-out mx-auto
+          className={`flex flex-col items-center justify-center text-center px-4 py-12 md:py-12 py-6 transform transition-all duration-1000 ease-out mx-auto mt-12 md:mt-0
             ${zoomOut ? "scale-90 opacity-100" : "scale-110 opacity-0"}`}
         >
-          <div className="flex flex-col items-center gap-4 mb-6">
+          <div className="flex flex-col items-center gap-4 md:gap-4 gap-2 mb-6 md:mb-6 mb-3">
             {/* Added text shadow for 3D effect */}
-            <h1 className="text-4xl md:text-6xl font-bold text-black mb-2 text-shadow-3d">
-              Hello, I&apos;m Muhammed Sayees
-            </h1>
+            <div className="flex flex-col md:flex-row items-center gap-1 md:gap-2">
+              <h1 className="text-3xl md:text-6xl text-4xl font-bold text-black mb-0 md:mb-2 text-shadow-3d">
+                Hello, I&apos;m
+              </h1>
+              <h1 className="text-3xl md:text-6xl text-4xl font-bold text-black mb-2 md:mb-2 text-shadow-3d">
+                Muhammed Sayees
+              </h1>
+            </div>
 
             {/* 3D cube component */}
-            <AspiringRoleCube />
+            <div className="scale-100 md:scale-100 scale-75">
+              <AspiringRoleCube />
+            </div>
           </div>
 
-          <div className="mb-6">
-            <p className="max-w-2xl mx-auto mb-4 text-black text-lg md:text-1.5xl">
+          <div className="mb-6 md:mb-6 mb-3">
+            <p className="max-w-2xl mx-auto mb-4 md:mb-4 mb-2 text-black text-lg md:text-1.5xl text-sm">
               <TypeWriter text="I build and code beautifully simple things, and I love what I do." delay={30} />
             </p>
           </div>
@@ -309,13 +366,8 @@ export default function Component() {
         </div>
       </section>
 
-      {/* Projects Section - adjust position when scrolled */}
-      <section 
-        id="projects-section" 
-        className={`min-h-[90vh] pt-20 pb-0 transition-all duration-1000 ease-out transform ${
-          isProjectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
+      {/* Projects Section */}
+      <section id="projects-section" className={`min-h-[90vh] pt-20 pb-0 transition-all duration-1000 ease-out transform ${isProjectsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-16 text-black text-shadow-3d">
             Featured Projects
@@ -329,11 +381,11 @@ export default function Component() {
                 className={`relative group cursor-pointer w-full md:w-auto ${
                   isMobile && index >= 2 ? 'hidden' : ''
                 } ${isMobile && index === 1 ? 'opacity-50 translate-y-8' : ''}`}
-                onClick={() => router.push("/works")}
+                onClick={() => project.id === 5 ? null : router.push("/works")}
                 onMouseEnter={() => setHoveredCard(project.id)}
                 onMouseLeave={() => setHoveredCard(null)}
               >
-                <div className="w-full h-full rounded-xl overflow-hidden backdrop-blur-sm bg-white/10 border border-white/20 shadow-3d-card shimmer">
+                <div className={`w-full h-full rounded-xl overflow-hidden backdrop-blur-sm bg-white/10 border border-white/20 shadow-3d-card shimmer ${project.id === 5 ? 'coming-soon' : ''}`}>
                   <img
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
@@ -347,7 +399,7 @@ export default function Component() {
             ))}
           </div>
 
-          <div className="text-center mt-8 md:mt-12">
+          <div className="text-center mt-8 md:mt-12 mb-16 md:mb-24">
             <Link
               href="/works"
               className="inline-flex items-center gap-2 bg-[#3d5be0] text-white px-5 py-2 rounded-full font-semibold transition-all duration-300 hover:scale-105 shadow-3d shimmer-button"
@@ -355,6 +407,46 @@ export default function Component() {
               View All Projects
               <ArrowRight className="w-4 h-4" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* New Superpowers Section */}
+      <section 
+        id="superpowers-section" 
+        className={`min-h-[40vh] py-20 transition-all duration-1000 ease-out transform ${
+          isSuperpowersVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-2xl md:text-4xl font-bold text-center mb-12 text-black text-shadow-3d">
+            My Superpowers
+          </h2>
+          
+          <div className="relative overflow-hidden">
+            <div className="relative flex justify-center items-center gap-3 md:gap-6 overflow-x-auto hide-scrollbar py-8">
+              {skills.map((skill, index) => (
+                <div
+                  key={skill.name}
+                  className="flex flex-col items-center transform transition-all duration-700 ease-out hover:scale-110 flex-shrink-0"
+                  style={{
+                    opacity: isSuperpowersVisible ? 1 : 0,
+                    transform: `translateX(${isSuperpowersVisible ? '0' : index % 2 === 0 ? '100px' : '-100px'})`,
+                    transitionDelay: `${index * 150}ms`,
+                  }}
+                >
+                  <div className="relative w-8 h-8 md:w-14 md:h-14 mb-1 glass-shimmer">
+                    <Image
+                      src={skill.logo}
+                      alt={`${skill.name} logo`}
+                      fill
+                      className="object-contain transition-all duration-500 ease-out"
+                    />
+                  </div>
+                  <span className="text-[10px] md:text-xs text-black font-medium transition-all duration-300">{skill.name}</span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -425,6 +517,13 @@ export default function Component() {
       </div>
 
       <style jsx>{`
+        /* Smooth scrolling for the entire page */
+        html {
+          scroll-behavior: smooth;
+          scroll-padding-top: 2rem;
+        }
+
+        /* Enhanced animations */
         @keyframes fadeInUp {
           from {
             opacity: 0;
@@ -436,6 +535,61 @@ export default function Component() {
           }
         }
 
+        @keyframes fadeInFromLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeInFromRight {
+          from {
+            opacity: 0;
+            transform: translateX(100px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        /* Smooth transitions for all elements */
+        * {
+          transition-property: all;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+          transition-duration: 300ms;
+        }
+
+        /* Enhanced hover effects */
+        .hover\:scale-110:hover {
+          transform: scale(1.1);
+          transition-duration: 500ms;
+        }
+
+        /* Smooth scrollbar */
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: rgba(0, 0, 0, 0.1);
+          border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hide scrollbar but keep functionality */
         .hide-scrollbar {
           -ms-overflow-style: none;
           scrollbar-width: none;
@@ -444,7 +598,39 @@ export default function Component() {
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
         }
-        
+
+        /* Smooth section transitions */
+        section {
+          transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Enhanced button transitions */
+        button, a {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Smooth image transitions */
+        img {
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Enhanced text transitions */
+        h1, h2, h3, p, span {
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Smooth navigation transitions */
+        .fixed {
+          transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Enhanced mobile responsiveness */
+        @media (max-width: 768px) {
+          * {
+            transition-duration: 200ms;
+          }
+        }
+
         /* 3D Text Shadow Effect */
         .text-shadow-3d {
           text-shadow: 1px 1px 1px rgba(0,0,0,0.1),
@@ -483,11 +669,6 @@ export default function Component() {
                     0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
-        /* Add smooth scrolling to the entire page */
-        html {
-          scroll-behavior: smooth;
-        }
-
         /* Ensure the body takes full height and allows scrolling */
         body {
           min-height: 100vh;
@@ -506,6 +687,59 @@ export default function Component() {
 
         /* Mobile Responsive Styles */
         @media (max-width: 768px) {
+          /* Hero section mobile adjustments */
+          section.min-h-\[85vh\] {
+            min-height: 60vh !important;
+            padding-top: 10rem !important;
+          }
+
+          .mt-12 {
+            margin-top: 3rem !important;
+          }
+
+          .text-4xl {
+            font-size: 2.25rem !important;
+          }
+
+          .text-2xl {
+            font-size: 1.5rem !important;
+          }
+
+          .text-sm {
+            font-size: 0.875rem !important;
+            line-height: 1.4 !important;
+          }
+
+          .text-4xl {
+            font-size: 2rem !important;
+          }
+
+          .shimmer-button {
+            padding: 0.5rem 1rem !important;
+            font-size: 0.875rem !important;
+          }
+
+          .text-3xl {
+            font-size: 1.75rem !important;
+          }
+
+          .text-base {
+            font-size: 0.875rem !important;
+          }
+
+          .gap-2 {
+            gap: 0.5rem !important;
+          }
+
+          .mb-3 {
+            margin-bottom: 0.75rem !important;
+          }
+
+          .py-6 {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+          }
+
           .getCardStyle {
             width: 100% !important;
             height: 250px !important;
@@ -572,6 +806,28 @@ export default function Component() {
 
           .text-1.5xl {
             font-size: 1.25rem !important;
+          }
+
+          .mt-16 {
+            margin-top: 4rem !important;
+          }
+
+          /* Mobile spacing adjustments */
+          #projects-section {
+            margin-bottom: 2rem;
+          }
+
+          #superpowers-section {
+            margin-top: 2rem;
+          }
+
+          .mb-16 {
+            margin-bottom: 4rem !important;
+          }
+
+          /* Adjust gap for mobile */
+          #superpowers-section .gap-3 {
+            gap: 0.75rem !important;
           }
         }
 
@@ -730,20 +986,150 @@ export default function Component() {
             0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
-        /* Mobile Responsive Styles */
+        /* Remove any background effects */
+        #superpowers-section {
+          background: transparent;
+        }
+
+        #superpowers-section > div {
+          background: transparent;
+        }
+
+        /* Smooth gradient transitions */
+        .bg-gradient-to-r,
+        .bg-gradient-to-l {
+          transition: opacity 0.5s ease-in-out;
+          background-size: 300% 100%;
+          background-position: 0% 50%;
+        }
+
+        /* Glass shimmer effect */
+        .glass-shimmer {
+          position: relative;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(5px);
+          border-radius: 12px;
+          padding: 8px;
+          box-shadow: 
+            0 4px 6px -1px rgba(0, 0, 0, 0.1),
+            0 2px 4px -1px rgba(0, 0, 0, 0.06),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+
+        .glass-shimmer::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+          );
+          animation: shimmer 3s infinite;
+          transform: skewX(-25deg);
+        }
+
+        @keyframes shimmer {
+          0% {
+            left: -100%;
+          }
+          100% {
+            left: 200%;
+          }
+        }
+
+        /* Bevel effect */
+        .glass-shimmer::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          border-radius: 12px;
+          background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.2) 0%,
+            transparent 50%,
+            rgba(0, 0, 0, 0.1) 100%
+          );
+          pointer-events: none;
+        }
+
+        /* Mobile spacing adjustments */
         @media (max-width: 768px) {
-          .text-2xl {
-            font-size: 1.5rem !important;
+          #projects-section {
+            margin-bottom: 2rem;
           }
 
-          .text-4xl {
-            font-size: 2rem !important;
+          #superpowers-section {
+            margin-top: 2rem;
           }
 
-          .shimmer-button {
-            padding: 0.5rem 1rem !important;
-            font-size: 0.875rem !important;
+          .mb-16 {
+            margin-bottom: 4rem !important;
           }
+
+          /* Adjust gap for mobile */
+          #superpowers-section .gap-3 {
+            gap: 0.75rem !important;
+          }
+
+          /* Adjust glass effect for mobile */
+          .glass-shimmer {
+            padding: 6px;
+            border-radius: 8px;
+          }
+        }
+
+        /* Coming soon card effect */
+        .coming-soon {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .coming-soon::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%
+          );
+          animation: shimmer 2s infinite;
+          z-index: 1;
+        }
+
+        .coming-soon::after {
+          content: 'Coming Soon';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.7);
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+          font-size: 0.875rem;
+          font-weight: 500;
+          z-index: 2;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+        }
+
+        .coming-soon:hover::after {
+          opacity: 1;
         }
       `}</style>
     </Layout>

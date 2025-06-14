@@ -1,6 +1,9 @@
+"use client"
+
 import React from 'react';
 import Layout from '../components/Layout';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
 const Works = () => {
   const projects = [
@@ -39,359 +42,237 @@ const Works = () => {
       tech: "html + css + js + MySQL",
       timeAgo: "2 years ago",
       projectLink: "https://github.com/sayeesx/requery-empire"
+    },
+    {
+      id: 5,
+      title: "New Project",
+      description: "An exciting new project is coming soon! Stay tuned for updates as we work on bringing this innovative idea to life.",
+      image: "/assets/updating.jpg",
+      tech: "Coming Soon",
+      timeAgo: "Updating...",
+      projectLink: "#",
+      isUpdating: true
     }
   ];
 
   const [hoveredCard, setHoveredCard] = React.useState(null);
-  const [expandedDescriptions, setExpandedDescriptions] = React.useState({});
+  const [flippedCards, setFlippedCards] = React.useState({});
+  const [showBackButton, setShowBackButton] = React.useState(true);
+  const [lastScrollY, setLastScrollY] = React.useState(0);
 
-  const styles = {
-    pageContainer: {
-      minHeight: '100vh',
-      position: 'relative',
-      overflowX: 'hidden',
-      overflowY: 'auto',
-      paddingTop: '2rem'
-    },
-    heading: {
-      textAlign: 'center',
-      fontSize: '2.5rem',
-      fontWeight: 'bold',
-      marginBottom: '2rem',
-      color: '#ffff',
-      '@media (max-width: 768px)': {
-        fontSize: '2rem',
-        marginBottom: '1.5rem'
-      }
-    },
-    container: {
-      display: 'flex',
-      flexWrap: 'wrap',
-      justifyContent: 'center',
-      gap: '2rem',
-      padding: '2rem',
-      position: 'relative',
-      zIndex: 1,
-      '@media (max-width: 768px)': {
-        gap: '1rem',
-        padding: '1rem'
-      }
-    },
-    bg: {
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      transform: 'translate(-50%, -50%)',
-      zIndex: 0,
-      pointerEvents: 'none',
-      width: '100%',
-      textAlign: 'center'
-    },
-    bgText: {
-      fontSize: 'min(20vw, 20rem)',
-      opacity: 0.1,
-      color: '#3d5be0',
-      whiteSpace: 'nowrap',
-      transition: 'all 0.3s ease',
-      '@media (max-width: 768px)': {
-        fontSize: 'min(15vw, 10rem)'
-      },
-      '@media (max-width: 480px)': {
-        fontSize: 'min(12vw, 6rem)'
-      }
-    },
-    nft: {
-      userSelect: 'none',
-      width: '300px',
-      height: '450px',
-      margin: '1rem',
-      perspective: '2000px', // Increased perspective for better 3D effect
-      position: 'relative',
-      '@media (max-width: 768px)': {
-        width: '280px',
-        height: '420px',
-        margin: '0.5rem'
-      }
-    },
-    main: {
-      display: 'flex',
-      flexDirection: 'column',
-      width: '100%',
-      height: '100%',
-      padding: '1rem',
-    },
-    tokenImage: {
-      borderRadius: '0.5rem',
-      maxWidth: '100%',
-      height: '250px',
-      objectFit: 'cover',
-      '@media (max-width: 768px)': {
-        height: '200px'
-      }
-    },
-    description: {
-      margin: '0.5rem 0',
-      color: '#ffffff',
-      position: 'relative',
-      overflow: 'hidden',
-      transition: 'max-height 0.3s ease-in-out',
-      lineHeight: '1.5',
-      fontSize: '0.95rem',
-      maxHeight: '4.5em',
-    },
-    expandedDescription: {
-      maxHeight: '1000px', // Large enough to contain any description
-    },
-    descriptionContainer: {
-      position: 'relative',
-      width: '100%',
-    },
-    descriptionGradient: {
-      position: 'absolute',
-      bottom: 0,
-      left:-80,
-      width: '200%',
-      height: '100%',
-      background: 'linear-gradient(180deg, transparent 0%, rgba(39, 42, 47, 0.68) 90%)',
-      pointerEvents: 'none',
-      transition: 'opacity 0.3s ease',
-    },
-    expandButton: {
-      background: 'none',
-      border: 'none',
-      color: 'rgba(255, 255, 255, 0.7)', // reduced opacity for button
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.5rem',
-      padding: '0.5rem 0',
-      transition: 'all 0.3s ease',
-      fontSize: '0.9rem',
-      '&:hover': {
-        opacity: 0.9,
-        color: 'rgba(255, 255, 255, 0.9)'
-      }
-    },
-    tokenInfo: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '0.5rem 0',
-      borderTop: '1px solid #88888855',
-      marginTop: '0.5rem'
-    },
-    techBadge: {
-      background: '#3d5be0',
-      color: 'white',
-      padding: '0.25rem 0.5rem',
-      borderRadius: '1rem',
-      fontSize: '0.875rem',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '0.25rem'
-    },
-    timeAgo: {
-      color: '#a89ec9',
-      fontSize: '0.8rem',
-      whiteSpace: 'nowrap',
-      overflow: 'hidden',
-      textOverflow: 'ellipsis',
-      display: 'inline-block',
-      maxWidth: '100%'
-    },
-    projectTitle: {
-      fontSize: '1.5rem',
-      fontWeight: 'bold',
-      color: '#3d5be0',
-      marginBottom: '0.5rem',
-      background: 'linear-gradient(45deg, #3d5be0 30%, #5c7bf7 90%)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-    },
-    wrapper: {
-      display: 'flex',
-      alignItems: 'center',
-      border: '1px solid #ffffff22',
-      padding: '0.3rem',
-      margin: '0',
-      marginRight: '0.5rem',
-      borderRadius: '100%',
-      boxShadow: 'inset 0 0 0 4px #000000aa'
-    },
-    creatorImage: {
-      borderRadius: '100%',
-      border: '1px solid #ffffff22',
-      width: '2rem',
-      height: '2rem',
-      objectFit: 'cover',
-      margin: 0
-    },
-    hr: {
-      width: '100%',
-      border: 'none',
-      borderBottom: '1px solid #88888855',
-      marginTop: 0
-    },
-    link: {
-      color: '#3d5be0',
-      textDecoration: 'none',
-      transition: 'color 0.3s',
-      '&:hover': {
-        color: '#ffffff'
-      }
-    },
-    card: {
-      position: 'relative',
-      width: '100%',
-      height: '100%',
-      transformStyle: 'preserve-3d',
-      transition: 'transform 0.6s ease',
-      borderRadius: '0.7rem',
-    },
-    cardFlipped: {
-      transform: 'rotateY(180deg)',
-    },
-    cardFront: {
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      backfaceVisibility: 'hidden',
-      WebkitBackfaceVisibility: 'hidden',
-      backgroundColor: '#282c34',
-      background: 'linear-gradient(0deg, rgba(40,44,52,1) 0%, rgba(255,255,255,0.1) 100%)',
-      borderRadius: '0.7rem',
-      border: '1px solid #ffffff22',
-    },
-    cardBack: {
-      position: 'absolute',
-      width: '100%',
-      height: '100%',
-      backfaceVisibility: 'hidden',
-      WebkitBackfaceVisibility: 'hidden',
-      transform: 'rotateY(180deg)',
-      backgroundColor: '#282c34',
-      background: 'linear-gradient(0deg, rgba(40,44,52,1) 0%, rgba(255,255,255,0.1) 100%)',
-      padding: '1.5rem',
-      display: 'flex',
-      flexDirection: 'column',
-      borderRadius: '0.7rem',
-      border: '1px solid #ffffff22',
-    },
-    techBox: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      gap: '0.5rem',
-      padding: '0.5rem',
-      width: '100%'
-    },
-    projectButton: {
-      background: 'linear-gradient(45deg, #3d5be0 30%, #5c7bf7 90%)',
-      color: 'white',
-      padding: '0.75rem 1.5rem',
-      borderRadius: '2rem',
-      border: 'none',
-      cursor: 'pointer',
-      transition: 'all 0.3s ease',
-      textAlign: 'center',
-      textDecoration: 'none',
-      marginTop: 'auto',
-      '&:hover': {
-        transform: 'translateY(-2px)',
-        boxShadow: '0 5px 15px rgba(61, 91, 224, 0.4)',
-      },
-    },
-  };
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const scrollThreshold = 50;
 
-  const getCardStyle = (id) => ({
-    ...styles.nft,
-    transform: hoveredCard === id ? 'scale(1.015)' : 'scale(1)',
-    boxShadow: hoveredCard === id ? '0 7px 50px 10px #000000aa' : '0 7px 20px 5px #00000088',
-  });
+      if (currentScrollY > lastScrollY + scrollThreshold) {
+        setShowBackButton(false);
+      } else if (currentScrollY < lastScrollY - scrollThreshold) {
+        setShowBackButton(true);
+      }
 
-  const toggleDescription = (id) => {
-    setExpandedDescriptions((prev) => ({
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  const toggleCard = (id) => {
+    setFlippedCards((prev) => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: !prev[id],
     }));
   };
 
   return (
     <Layout>
-      <div style={styles.pageContainer}>
-        <div style={{
-          ...styles.bg,
-          '@media (max-width: 768px)': {
-            fontSize: hoveredCard ? '0' : '10rem'
+      <style jsx global>{`
+        @keyframes flow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        .glassmorphic {
+          background: white;
+          border-radius: 0.75rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-flip {
+          perspective: 1000px;
+          transform-style: preserve-3d;
+          transition: transform 0.6s;
+          width: 100%;
+          height: 100%;
+        }
+
+        .card-flip.flipped {
+          transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+          backface-visibility: hidden;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: white;
+          border-radius: 0.75rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-back {
+          transform: rotateY(180deg);
+        }
+
+        .back-button, .contact-button {
+          position: fixed;
+          top: 12px;
+          z-index: 1000;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 6px 12px;
+          background: transparent;
+          color: black;
+          font-weight: 500;
+          font-size: 0.75rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+        }
+
+        .back-button {
+          left: 6px;
+          border: none;
+        }
+
+        .back-button:hover {
+          color: #3d5be0;
+        }
+
+        .contact-button {
+          right: 6px;
+          border: 1.5px solid black;
+          border-radius: 16px;
+        }
+
+        .contact-button:hover {
+          background: black;
+          color: white;
+        }
+
+        .back-button.hidden, .contact-button.hidden {
+          opacity: 0;
+          transform: translateY(-20px);
+          pointer-events: none;
+        }
+
+        .project-heading {
+          text-align: center;
+          font-size: 2.5rem;
+          font-weight: bold;
+          color: #3b82f6;
+          padding: 1rem;
+          background: white;
+          border-radius: 0.5rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          margin: 0.5rem 0 1.5rem 0;
+          position: relative;
+          z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+          .project-heading {
+            font-size: 1.5rem;
+            margin: 0.25rem 0 1rem 0;
           }
-        }}>
-          <h1 style={{
-            ...styles.bgText,
-            '@media (max-width: 768px)': {
-              fontSize: '10rem'
-            },
-            '@media (max-width: 480px)': {
-              fontSize: '6rem'
-            }
-          }}>Projects</h1>
-        </div>
+        }
+
+        @keyframes pulse {
+          0% { opacity: 0.6; }
+          50% { opacity: 1; }
+          100% { opacity: 0.6; }
+        }
+
+        .updating {
+          animation: pulse 2s infinite;
+        }
+
+        .updating-text {
+          color: #3b82f6;
+          font-weight: 500;
+        }
+      `}</style>
+
+      <button onClick={() => (window.location.href = "/")} className={`back-button ${showBackButton ? "" : "hidden"}`}>
+        <ArrowRight className="w-3 h-3 rotate-180" />
+        Back to Home
+      </button>
+
+      <Link href="/contact" className={`contact-button ${showBackButton ? "" : "hidden"}`}>
+        Contact Me
+        <ArrowRight className="w-3 h-3" />
+      </Link>
+
+      <div className="max-w-7xl mx-auto px-4 py-8 mt-20">
+        <h1 className="project-heading">My Projects</h1>
         
-        <h1 style={styles.heading}>My Projects</h1>
-        
-        <div style={styles.container}>
+        <div className="flex flex-wrap justify-center gap-8">
           {projects.map((project) => (
             <div
               key={project.id}
-              style={getCardStyle(project.id)}
-              onMouseEnter={() => {
-                setHoveredCard(project.id);
-                setExpandedDescriptions(prev => ({ ...prev, [project.id]: true }));
-              }}
-              onMouseLeave={() => {
-                setHoveredCard(null);
-                setExpandedDescriptions(prev => ({ ...prev, [project.id]: false }));
-              }}
+              className="w-[300px] h-[450px] m-4 perspective-1000"
+              onMouseEnter={() => setHoveredCard(project.id)}
+              onMouseLeave={() => setHoveredCard(null)}
             >
-              <div style={{
-                ...styles.card,
-                transform: expandedDescriptions[project.id] ? 'rotateY(180deg)' : 'rotateY(0deg)'
-              }}>
+              <div
+                className={`card-flip ${flippedCards[project.id] ? "flipped" : ""}`}
+                onClick={() => !project.isUpdating && toggleCard(project.id)}
+              >
                 {/* Front of card */}
-                <div style={styles.cardFront}>
-                  <div style={styles.main}>
-                    <img
-                      style={styles.tokenImage}
-                      src={project.image}
-                      alt={project.title}
-                    />
-                    <h2 style={styles.projectTitle}>{project.title}</h2>
-                    <div style={styles.description}>
-                      {project.description.substring(0, 100)}...
-                    </div>
-                    <div style={styles.techBox}>
-                      <span>⚡ {project.tech.split(',')[0].split('+')[0].trim()}</span>
-                      <span style={styles.timeAgo}>🕒 {project.timeAgo}</span>
-                    </div>
-                  </div>
+                <div className="card-front p-6">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-[200px] object-cover rounded-lg mb-4"
+                  />
+                  <h2 className="text-xl font-bold text-[#3b82f6] mb-2">{project.title}</h2>
+                  <span className="inline-block px-3 py-1 bg-[#3b82f6]/10 text-[#3b82f6] rounded-full text-sm mb-2">
+                    ⚡ {project.tech}
+                  </span>
+                  <span className={`block text-gray-500 text-sm mb-2 ${project.isUpdating ? 'updating updating-text' : ''}`}>
+                    {project.isUpdating ? '🔄 ' : '🕒 '}{project.timeAgo}
+                  </span>
+                  <p className="text-gray-600 text-sm italic">
+                    Click to view details →
+                  </p>
                 </div>
 
                 {/* Back of card */}
-                <div style={styles.cardBack}>
-                  <h2 style={styles.projectTitle}>{project.title}</h2>
-                  <p style={{color: '#fff', lineHeight: '1.6', marginBottom: 'auto'}}>
+                <div className="card-back p-6">
+                  <h2 className="text-xl font-bold text-[#3b82f6] mb-4">{project.title}</h2>
+                  <p className="text-gray-600 text-sm mb-4">
                     {project.description}
                   </p>
-                  <div style={styles.techBox}>
-                    <span>⚡ {project.tech}</span>
+                  <div className="mb-4">
+                    <span className="inline-block px-3 py-1 bg-[#3b82f6]/10 text-[#3b82f6] rounded-full text-sm">
+                      ⚡ {project.tech}
+                    </span>
                   </div>
-                  <a
-                    href={project.projectLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={styles.projectButton}
-                  >
-                    View Project →
-                  </a>
+                  {!project.isUpdating && (
+                    <a
+                      href={project.projectLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block px-4 py-2 bg-[#3b82f6] text-white rounded-full text-sm font-medium hover:bg-[#2563eb] transition-colors"
+                    >
+                      View Project →
+                    </a>
+                  )}
                 </div>
               </div>
             </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Head from 'next/head'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import Layout from '../components/Layout'
 import ChatWidget from '../components/chatWidget'
 
@@ -36,10 +36,6 @@ function SkillSection({ skills, hoveredSkill, setHoveredSkill, selectedSkill, se
           onMouseEnter={() => setHoveredSkill(skill)}
           onMouseLeave={() => setHoveredSkill(null)}
           className="flex flex-col items-center p-4 rounded-lg transition-all hover:scale-105"
-          style={{
-            filter: hoveredSkill && hoveredSkill.name !== skill.name ? 'blur(2px)' : 'none',
-            transition: 'all 0.3s ease',
-          }}
         >
           <Image
             src={skill.logo}
@@ -89,84 +85,132 @@ export default function SkillsPage() {
 
       <Link 
         href="/"
-        className={`fixed top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-[#3d5be0] text-white rounded-full hover:bg-[#2d4bd0] transition-all duration-300 ${
+        className={`fixed top-6 left-6 z-50 flex items-center gap-1 px-3 py-1.5 text-black hover:text-[#3d5be0] transition-all duration-300 text-xs ${
           showBackButton ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
         }`}
       >
-        <ArrowLeft className="w-4 h-4" />
+        <ArrowLeft className="w-3 h-3" />
         Back to Home
+      </Link>
+
+      <Link 
+        href="/works"
+        className={`fixed top-6 right-6 z-50 flex items-center gap-1 px-3 py-1.5 text-black hover:text-[#3d5be0] transition-all duration-300 border border-black rounded-full hover:bg-black/5 text-xs ${
+          showBackButton ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
+        }`}
+      >
+        My Projects
+        <ArrowRight className="w-3 h-3" />
       </Link>
 
       <div className="min-h-screen bg-white py-20">
         <div className="container mx-auto px-4">
           <h1 className="text-4xl font-bold text-center mb-8 text-black">My Skills</h1>
           
-          <div className="mb-8">
-            <div className="flex justify-center space-x-4">
-              <button
-                onClick={() => setActiveTab('webDev')}
-                className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                  activeTab === 'webDev' 
-                    ? 'bg-[#3d5be0] text-white' 
-                    : 'bg-white text-[#3d5be0] border border-[#3d5be0] hover:bg-[#3d5be0] hover:text-white'
-                }`}
-              >
-                Web Development
-              </button>
-              <button
-                onClick={() => setActiveTab('ai')}
-                className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                  activeTab === 'ai' 
-                    ? 'bg-[#3d5be0] text-white' 
-                    : 'bg-white text-[#3d5be0] border border-[#3d5be0] hover:bg-[#3d5be0] hover:text-white'
-                }`}
-              >
-                AI & Data Science
-              </button>
-              <button
-                onClick={() => setActiveTab('other')}
-                className={`px-4 py-2 rounded-full transition-all duration-300 ${
-                  activeTab === 'other' 
-                    ? 'bg-[#3d5be0] text-white' 
-                    : 'bg-white text-[#3d5be0] border border-[#3d5be0] hover:bg-[#3d5be0] hover:text-white'
-                }`}
-              >
-                Other Languages
-              </button>
+          <div className="mb-12">
+            <div className="flex justify-center">
+              <div className="relative bg-gray-100 p-1 rounded-full shadow-lg">
+                <div 
+                  className="absolute h-[calc(100%-8px)] bg-white rounded-full transition-all duration-500 ease-in-out shadow-md"
+                  style={{
+                    width: 'calc(33.333% - 8px)',
+                    transform: `translateX(${
+                      activeTab === 'webDev' ? '0%' : 
+                      activeTab === 'ai' ? '100%' : 
+                      'calc(200% + 16px)'
+                    })`,
+                    left: '4px',
+                    transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }}
+                />
+                <div className="relative flex">
+                  <button
+                    onClick={() => setActiveTab('webDev')}
+                    className={`relative px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      activeTab === 'webDev' ? 'text-[#3d5be0]' : 'text-gray-600'
+                    }`}
+                  >
+                    Web Dev
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('ai')}
+                    className={`relative px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      activeTab === 'ai' ? 'text-[#3d5be0]' : 'text-gray-600'
+                    }`}
+                  >
+                    AI & Data
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('other')}
+                    className={`relative px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                      activeTab === 'other' ? 'text-[#3d5be0]' : 'text-gray-600'
+                    }`}
+                    style={{
+                      paddingLeft: '2.25rem',
+                      paddingRight: '2.25rem'
+                    }}
+                  >
+                    Others
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {activeTab === 'webDev' && (
-            <SkillSection
-              skills={webDevSkills}
-              hoveredSkill={hoveredSkill}
-              setHoveredSkill={setHoveredSkill}
-              selectedSkill={selectedSkill}
-              setSelectedSkill={setSelectedSkill}
-            />
-          )}
-          {activeTab === 'ai' && (
-            <SkillSection
-              skills={aiSkills}
-              hoveredSkill={hoveredSkill}
-              setHoveredSkill={setHoveredSkill}
-              selectedSkill={selectedSkill}
-              setSelectedSkill={setSelectedSkill}
-            />
-          )}
-          {activeTab === 'other' && (
-            <SkillSection
-              skills={otherSkills}
-              hoveredSkill={hoveredSkill}
-              setHoveredSkill={setHoveredSkill}
-              selectedSkill={selectedSkill}
-              setSelectedSkill={setSelectedSkill}
-            />
-          )}
+          <div className="relative">
+            <div 
+              className={`transition-all duration-500 ease-in-out transform ${
+                activeTab === 'webDev' ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[-100%] absolute'
+              }`}
+              style={{
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <SkillSection
+                skills={webDevSkills}
+                hoveredSkill={hoveredSkill}
+                setHoveredSkill={setHoveredSkill}
+                selectedSkill={selectedSkill}
+                setSelectedSkill={setSelectedSkill}
+              />
+            </div>
+            <div 
+              className={`transition-all duration-500 ease-in-out transform ${
+                activeTab === 'ai' ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[100%] absolute'
+              }`}
+              style={{
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <SkillSection
+                skills={aiSkills}
+                hoveredSkill={hoveredSkill}
+                setHoveredSkill={setHoveredSkill}
+                selectedSkill={selectedSkill}
+                setSelectedSkill={setSelectedSkill}
+              />
+            </div>
+            <div 
+              className={`transition-all duration-500 ease-in-out transform ${
+                activeTab === 'other' ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[100%] absolute'
+              }`}
+              style={{
+                transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              <SkillSection
+                skills={otherSkills}
+                hoveredSkill={hoveredSkill}
+                setHoveredSkill={setHoveredSkill}
+                selectedSkill={selectedSkill}
+                setSelectedSkill={setSelectedSkill}
+              />
+            </div>
+          </div>
 
           {selectedSkill && (
             <div
-              className="mx-auto max-w-2xl text-center mt-8 p-6 rounded-xl bg-white/10 border border-white/20 backdrop-blur-sm"
+              className="mx-auto max-w-2xl text-center mt-8 p-6 rounded-xl glassmorphic"
               style={{
                 animation: 'slide-down 0.5s ease forwards',
               }}
@@ -204,10 +248,39 @@ export default function SkillsPage() {
           }
         }
 
+        .glassmorphic {
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+
         @media (max-width: 768px) {
+          .relative.bg-gray-100 {
+            padding: 0.25rem !important;
+          }
+          .relative.bg-gray-100 > div:first-child {
+            height: calc(100% - 2px) !important;
+            width: calc(33.333% - 4px) !important;
+            left: 2px !important;
+            top: 1px !important;
+            transform: translateX(${
+              activeTab === 'webDev' ? '0%' : 
+              activeTab === 'ai' ? '100%' : 
+              'calc(200% + 8px)'
+            }) !important;
+          }
           button {
-            font-size: 0.875rem !important;
-            padding: 0.5rem 1rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            font-size: 0.75rem !important;
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+            line-height: 1 !important;
+          }
+          button:last-child {
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
           }
         }
       `}</style>

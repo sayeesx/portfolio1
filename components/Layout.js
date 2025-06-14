@@ -11,8 +11,8 @@ export const metadata = {
 
 const Layout = ({ children }) => {
   return (
-    <div className={styles.layoutWrapper}>
-      <main className={styles.mainContent} style={{ margin: 0, padding: 0 }}>
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-100">
+      <main className="relative" style={{ margin: 0, padding: 0 }}>
         {children}
       </main>
     </div>
