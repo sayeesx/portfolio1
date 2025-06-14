@@ -602,6 +602,9 @@ export default function Component() {
         /* Smooth section transitions */
         section {
           transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+          position: relative;
+          width: 100%;
+          overflow: visible;
         }
 
         /* Enhanced button transitions */
@@ -624,10 +627,118 @@ export default function Component() {
           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Enhanced mobile responsiveness */
+        /* Mobile Responsive Styles */
         @media (max-width: 768px) {
+          /* Base styles */
           * {
             transition-duration: 200ms;
+          }
+
+          /* Hero section */
+          section.min-h-\[85vh\] {
+            min-height: 60vh !important;
+            padding-top: 6rem !important;
+            padding-bottom: 2rem !important;
+          }
+
+          /* Typography */
+          h1.text-4xl, h1.text-6xl {
+            font-size: 1.75rem !important;
+            line-height: 1.2 !important;
+          }
+
+          h2.text-2xl, h2.text-4xl {
+            font-size: 1.5rem !important;
+            line-height: 1.3 !important;
+          }
+
+          p.text-lg, p.text-1.5xl {
+            font-size: 0.875rem !important;
+            line-height: 1.4 !important;
+          }
+
+          /* Navigation */
+          .fixed.top-12 {
+            top: 1rem !important;
+          }
+
+          .fixed.top-12.left-6,
+          .fixed.top-12.right-6 {
+            font-size: 0.65rem !important;
+            padding: 0.3rem 0.6rem !important;
+          }
+
+          /* Projects section */
+          #projects-section {
+            padding-top: 3rem !important;
+            margin-top: 0 !important;
+          }
+
+          .getCardStyle {
+            width: 100% !important;
+            height: 200px !important;
+            margin: 0.5rem 0 !important;
+          }
+
+          /* Superpowers section */
+          #superpowers-section {
+            padding-top: 3rem !important;
+            margin-top: 0 !important;
+          }
+
+          .glass-shimmer {
+            padding: 6px !important;
+            border-radius: 8px !important;
+          }
+
+          /* Contact section */
+          #contact-section {
+            padding-top: 3rem !important;
+            margin-top: 0 !important;
+          }
+
+          /* Buttons and interactive elements */
+          button, .shimmer-button {
+            font-size: 0.75rem !important;
+            padding: 0.4rem 0.8rem !important;
+          }
+
+          /* Spacing adjustments */
+          .gap-2 {
+            gap: 0.5rem !important;
+          }
+
+          .gap-3 {
+            gap: 0.75rem !important;
+          }
+
+          .gap-4 {
+            gap: 1rem !important;
+          }
+
+          .mb-3 {
+            margin-bottom: 0.75rem !important;
+          }
+
+          .mb-6 {
+            margin-bottom: 1.5rem !important;
+          }
+
+          .py-6 {
+            padding-top: 1.5rem !important;
+            padding-bottom: 1.5rem !important;
+          }
+
+          /* Container adjustments */
+          .max-w-7xl {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+          }
+
+          /* Chat widget */
+          .fixed.bottom-8.right-8 {
+            bottom: 1rem !important;
+            right: 1rem !important;
           }
         }
 
@@ -678,190 +789,6 @@ export default function Component() {
           padding-bottom: 0;
         }
 
-        /* Ensure sections are properly spaced */
-        section {
-          position: relative;
-          width: 100%;
-          overflow: visible;
-        }
-
-        /* Mobile Responsive Styles */
-        @media (max-width: 768px) {
-          /* Hero section mobile adjustments */
-          section.min-h-\[85vh\] {
-            min-height: 60vh !important;
-            padding-top: 10rem !important;
-          }
-
-          .mt-12 {
-            margin-top: 3rem !important;
-          }
-
-          .text-4xl {
-            font-size: 2.25rem !important;
-          }
-
-          .text-2xl {
-            font-size: 1.5rem !important;
-          }
-
-          .text-sm {
-            font-size: 0.875rem !important;
-            line-height: 1.4 !important;
-          }
-
-          .text-4xl {
-            font-size: 2rem !important;
-          }
-
-          .shimmer-button {
-            padding: 0.5rem 1rem !important;
-            font-size: 0.875rem !important;
-          }
-
-          .text-3xl {
-            font-size: 1.75rem !important;
-          }
-
-          .text-base {
-            font-size: 0.875rem !important;
-          }
-
-          .gap-2 {
-            gap: 0.5rem !important;
-          }
-
-          .mb-3 {
-            margin-bottom: 0.75rem !important;
-          }
-
-          .py-6 {
-            padding-top: 1.5rem !important;
-            padding-bottom: 1.5rem !important;
-          }
-
-          .getCardStyle {
-            width: 100% !important;
-            height: 250px !important;
-            margin: 0.5rem 0 !important;
-          }
-
-          button {
-            font-size: 0.75rem !important;
-            padding: 0.4rem 0.8rem !important;
-          }
-
-          input, textarea {
-            font-size: 0.875rem !important;
-          }
-
-          /* Navigation buttons */
-          .fixed.top-12.right-6 button {
-            font-size: 0.65rem !important;
-            padding: 0.3rem 0.6rem !important;
-          }
-
-          .fixed.top-12.right-6 .w-3 {
-            width: 0.75rem !important;
-            height: 0.75rem !important;
-          }
-
-          /* Project cards */
-          .shadow-3d-card {
-            transform: scale(0.95);
-          }
-
-          /* Contact form button */
-          #contact-section button {
-            font-size: 0.7rem !important;
-            padding: 0.35rem 0.7rem !important;
-          }
-
-          /* View All Projects button */
-          .inline-flex.items-center.gap-2 {
-            font-size: 0.8rem !important;
-            padding: 0.4rem 0.8rem !important;
-          }
-
-          /* Adjust spacing for mobile */
-          section {
-            padding-top: 2rem !important;
-          }
-
-          #projects-section {
-            margin-top: -0.5rem;
-          }
-
-          #contact-section {
-            margin-top: -0.5rem;
-          }
-
-          .text-4xl {
-            font-size: 2.5rem !important;
-          }
-
-          .text-lg {
-            font-size: 1rem !important;
-          }
-
-          .text-1.5xl {
-            font-size: 1.25rem !important;
-          }
-
-          .mt-16 {
-            margin-top: 4rem !important;
-          }
-
-          /* Mobile spacing adjustments */
-          #projects-section {
-            margin-bottom: 2rem;
-          }
-
-          #superpowers-section {
-            margin-top: 2rem;
-          }
-
-          .mb-16 {
-            margin-bottom: 4rem !important;
-          }
-
-          /* Adjust gap for mobile */
-          #superpowers-section .gap-3 {
-            gap: 0.75rem !important;
-          }
-        }
-
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in {
-          animation: fade-in 0.3s ease-out forwards;
-        }
-
-        /* Remove all bottom padding and margins */
-        section {
-          padding-bottom: 0 !important;
-          margin-bottom: 0 !important;
-        }
-
-        /* Ensure proper spacing between sections */
-        #projects-section {
-          margin-top: -4rem;
-        }
-
-        #contact-section {
-          margin-top: -4rem;
-          padding-bottom: 0 !important;
-        }
-
         /* Ensure main content takes full height */
         main {
           min-height: 100vh;
@@ -892,6 +819,7 @@ export default function Component() {
           margin-bottom: 0;
         }
 
+        /* Carousel animation */
         @keyframes carousel {
           0% {
             transform: translateX(0);
@@ -909,98 +837,6 @@ export default function Component() {
 
         .animate-carousel:hover {
           animation-play-state: paused;
-        }
-
-        /* Enhanced glass shimmer effect */
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-
-        .shimmer {
-          position: relative;
-          overflow: hidden;
-        }
-
-        .shimmer::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.1) 25%,
-            rgba(255, 255, 255, 0.2) 50%,
-            rgba(255, 255, 255, 0.1) 75%,
-            rgba(255, 255, 255, 0) 100%
-          );
-          animation: shimmer 3s infinite;
-          background-size: 200% 100%;
-          z-index: 1;
-        }
-
-        /* Enhanced 3D button with shimmer */
-        .shimmer-button {
-          position: relative;
-          overflow: hidden;
-          box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06),
-            0 1px 0 rgba(255, 255, 255, 0.1) inset,
-            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-        }
-
-        .shimmer-button::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.2) 25%,
-            rgba(255, 255, 255, 0.3) 50%,
-            rgba(255, 255, 255, 0.2) 75%,
-            rgba(255, 255, 255, 0) 100%
-          );
-          animation: shimmer 2s infinite;
-          background-size: 200% 100%;
-          z-index: 1;
-        }
-
-        .shimmer-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 
-            0 10px 15px -3px rgba(0, 0, 0, 0.1),
-            0 4px 6px -2px rgba(0, 0, 0, 0.05),
-            0 1px 0 rgba(255, 255, 255, 0.1) inset,
-            0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-        }
-
-        /* Remove any background effects */
-        #superpowers-section {
-          background: transparent;
-        }
-
-        #superpowers-section > div {
-          background: transparent;
-        }
-
-        /* Smooth gradient transitions */
-        .bg-gradient-to-r,
-        .bg-gradient-to-l {
-          transition: opacity 0.5s ease-in-out;
-          background-size: 300% 100%;
-          background-position: 0% 50%;
         }
 
         /* Glass shimmer effect */
@@ -1060,32 +896,6 @@ export default function Component() {
             rgba(0, 0, 0, 0.1) 100%
           );
           pointer-events: none;
-        }
-
-        /* Mobile spacing adjustments */
-        @media (max-width: 768px) {
-          #projects-section {
-            margin-bottom: 2rem;
-          }
-
-          #superpowers-section {
-            margin-top: 2rem;
-          }
-
-          .mb-16 {
-            margin-bottom: 4rem !important;
-          }
-
-          /* Adjust gap for mobile */
-          #superpowers-section .gap-3 {
-            gap: 0.75rem !important;
-          }
-
-          /* Adjust glass effect for mobile */
-          .glass-shimmer {
-            padding: 6px;
-            border-radius: 8px;
-          }
         }
 
         /* Coming soon card effect */

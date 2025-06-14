@@ -256,9 +256,41 @@ export default function SkillsPage() {
         }
 
         @media (max-width: 768px) {
+          /* Navigation buttons */
+          .fixed.top-6 {
+            top: 1rem !important;
+          }
+
+          .fixed.top-6.left-6,
+          .fixed.top-6.right-6 {
+            font-size: 0.65rem !important;
+            padding: 0.3rem 0.6rem !important;
+          }
+
+          /* Main container */
+          .min-h-screen {
+            padding-top: 4rem !important;
+            padding-bottom: 2rem !important;
+          }
+
+          .container {
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+          }
+
+          /* Typography */
+          h1.text-4xl {
+            font-size: 1.75rem !important;
+            margin-bottom: 2rem !important;
+          }
+
+          /* Tab navigation */
           .relative.bg-gray-100 {
             padding: 0.25rem !important;
+            width: 90% !important;
+            max-width: 300px !important;
           }
+
           .relative.bg-gray-100 > div:first-child {
             height: calc(100% - 2px) !important;
             width: calc(33.333% - 4px) !important;
@@ -270,6 +302,7 @@ export default function SkillsPage() {
               'calc(200% + 8px)'
             }) !important;
           }
+
           button {
             padding-left: 1rem !important;
             padding-right: 1rem !important;
@@ -278,9 +311,75 @@ export default function SkillsPage() {
             padding-bottom: 0.25rem !important;
             line-height: 1 !important;
           }
+
           button:last-child {
             padding-left: 1.5rem !important;
             padding-right: 1.5rem !important;
+          }
+
+          /* Skills grid */
+          .grid {
+            gap: 1rem !important;
+            padding: 0 0.5rem !important;
+          }
+
+          /* Skill cards */
+          .flex.flex-col.items-center.p-4 {
+            padding: 0.75rem !important;
+          }
+
+          .flex.flex-col.items-center.p-4 img {
+            width: 48px !important;
+            height: 48px !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          .flex.flex-col.items-center.p-4 span {
+            font-size: 0.75rem !important;
+          }
+
+          /* Selected skill section */
+          .mx-auto.max-w-2xl {
+            margin-top: 1.5rem !important;
+            padding: 1rem !important;
+          }
+
+          .mx-auto.max-w-2xl h3 {
+            font-size: 1rem !important;
+            margin-bottom: 1rem !important;
+          }
+
+          .mx-auto.max-w-2xl li {
+            margin-bottom: 0.5rem !important;
+          }
+
+          .mx-auto.max-w-2xl li span {
+            font-size: 0.75rem !important;
+            padding: 0.25rem 0.75rem !important;
+          }
+
+          /* Chat widget */
+          .fixed.bottom-8.right-8 {
+            bottom: 1rem !important;
+            right: 1rem !important;
+          }
+
+          /* Spacing adjustments */
+          .mb-12 {
+            margin-bottom: 2rem !important;
+          }
+
+          .mb-8 {
+            margin-bottom: 1.5rem !important;
+          }
+
+          .mt-8 {
+            margin-top: 1.5rem !important;
+          }
+
+          /* Animation adjustments */
+          .transition-all {
+            transition-duration: 200ms !important;
           }
         }
       `}</style>
