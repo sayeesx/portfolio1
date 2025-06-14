@@ -839,63 +839,54 @@ export default function Component() {
           animation-play-state: paused;
         }
 
-        /* Glass shimmer effect */
+        /* Modern minimal animation for logos */
         .glass-shimmer {
           position: relative;
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(5px);
           border-radius: 12px;
           padding: 8px;
-          box-shadow: 
-            0 4px 6px -1px rgba(0, 0, 0, 0.1),
-            0 2px 4px -1px rgba(0, 0, 0, 0.06),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1),
-            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
           overflow: hidden;
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .glass-shimmer::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -100%;
-          width: 50%;
-          height: 100%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.2),
-            transparent
-          );
-          animation: shimmer 3s infinite;
-          transform: skewX(-25deg);
+        .glass-shimmer:hover {
+          transform: scale(1.1);
         }
 
-        @keyframes shimmer {
+        .glass-shimmer img {
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          filter: grayscale(100%);
+        }
+
+        .glass-shimmer:hover img {
+          filter: grayscale(0%);
+        }
+
+        /* Remove old shimmer effect */
+        .glass-shimmer::before,
+        .glass-shimmer::after {
+          display: none;
+        }
+
+        /* Add subtle pulse animation */
+        @keyframes subtle-pulse {
           0% {
-            left: -100%;
+            opacity: 0.6;
+          }
+          50% {
+            opacity: 1;
           }
           100% {
-            left: 200%;
+            opacity: 0.6;
           }
         }
 
-        /* Bevel effect */
-        .glass-shimmer::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          border-radius: 12px;
-          background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.2) 0%,
-            transparent 50%,
-            rgba(0, 0, 0, 0.1) 100%
-          );
-          pointer-events: none;
+        .glass-shimmer {
+          animation: subtle-pulse 3s ease-in-out infinite;
+        }
+
+        .glass-shimmer:hover {
+          animation: none;
+          opacity: 1;
         }
 
         /* Coming soon card effect */
